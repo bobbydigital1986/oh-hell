@@ -7,6 +7,9 @@ import "./boot.js";
 import configuration from "./config.js";
 import addMiddlewares from "./middlewares/addMiddlewares.js";
 import rootRouter from "./routes/rootRouter.js";
+import { createServer } from "http"
+import { Server } from "socket.io"
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
@@ -31,7 +34,28 @@ app.use(
 app.use(bodyParser.json());
 addMiddlewares(app);
 app.use(rootRouter);
-app.listen(configuration.web.port, configuration.web.host, () => {
-  console.log("Server is listening...");
+
+const server = createServer(app)
+const io = new Server(server)
+
+io.on('connection', (socket) => {
+  console.log('Client connected');
+
+  socket.on('chat message', (message) => {
+    console.log(`Received message: ${message}`);
+    io.emit('chat message', message);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
 });
+
+server.listen(3000, () => {
+  console.log("Server started on port 3000")
+})
+
+// app.listen(configuration.web.port, configuration.web.host, () => {
+//   console.log("Server is listening...");
+// });
 export default app;
