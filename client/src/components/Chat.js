@@ -1,33 +1,29 @@
 import React, { useState, useEffect } from 'react';
-// import './App.css';
-import io from 'socket.io-client';
 
-const socket = io('http://localhost:3000');
-
-const Chat = (props) => {
+const Chat = ({ socket, user }) => {
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {
         socket.on('connect', () => {
-        console.log('Connected to server');
+            console.log('Connected to server');
         });
         
         socket.on('chat message', (message) => {
-        setMessages((messages) => [...messages, message]);
+            setMessages((messages) => [...messages, message]);
         });
         
         socket.on('disconnect', () => {
-        console.log('Disconnected from server');
+            console.log('Disconnected from server');
         });
     }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         if (inputValue.trim() !== '') {
-        const signedMessage = `${props.user.email}: ${inputValue}`
-        socket.emit('chat message', signedMessage);
-        setInputValue('');
+            const signedMessage = `${user.email}: ${inputValue}`
+            socket.emit('chat message', signedMessage);
+            setInputValue('');
         }
     };
 

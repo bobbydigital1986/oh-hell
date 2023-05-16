@@ -9,6 +9,9 @@ import addMiddlewares from "./middlewares/addMiddlewares.js";
 import rootRouter from "./routes/rootRouter.js";
 import { createServer } from "http"
 import { Server } from "socket.io"
+import { Game, User, Registration } from "./models/index.js"
+import createGame from "./services/createGame.js";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,6 +49,16 @@ io.on('connection', (socket) => {
     io.emit('chat message', message);
   });
 
+  socket.on('game:create', async(user) => {
+    const selectedGame = await createGame(user)
+    console.log("selectedGame", selectedGame)
+    if (selectedGame.findGame) {
+      io.to(socket.id).emit('game:create join-existing', selectedGame.findGame.id)
+    } else {
+      io.to(socket.id).emit('game:create success', selectedGame.newGame.id)
+    }
+  })
+
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });
@@ -55,7 +68,4 @@ server.listen(3000, () => {
   console.log("Server started on port 3000")
 })
 
-// app.listen(configuration.web.port, configuration.web.host, () => {
-//   console.log("Server is listening...");
-// });
 export default app;
