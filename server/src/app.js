@@ -11,6 +11,8 @@ import { createServer } from "http"
 import { Server } from "socket.io"
 import { Game, User, Registration } from "./models/index.js"
 import createGame from "./services/createGame.js";
+import startGame from "./services/startGame.js"
+import joinGame from "./services/joinGame.js"
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -51,13 +53,35 @@ io.on('connection', (socket) => {
 
   socket.on('game:create', async(user) => {
     const selectedGame = await createGame(user)
-    console.log("selectedGame", selectedGame)
+    // console.log(selectedGame)
+    // console.log("selectedGame", selectedGame)
     if (selectedGame.findGame) {
-      io.to(socket.id).emit('game:create join-existing', selectedGame.findGame.id)
+      io.to(socket.id).emit('game:create join-existing', { existingGameId: selectedGame.findGame.id })
     } else {
-      io.to(socket.id).emit('game:create success', selectedGame.newGame.id)
+      io.to(socket.id).emit('game:create success', { newGameId: selectedGame.newGame.id })
     }
   })
+
+  socket.on('game:start', async(gameData) => {
+    console.log("entered game start", gameData.gameId, gameData.players)
+    const startedGame = startGame(gameData.gameId, gameData.players)
+    
+  })
+
+  socket.on('game:joined', async({ gameId, user }) => {
+    console.log('gameId', gameId)
+    console.log('userId', user)
+    socket.user = user
+    console.log("socket.user", socket.user)
+    const game = await Game.query().findById(gameId)
+    const currentPlayers = await game.$relatedQuery("registrants")
+    const joinedAction = joinGame(game, user.id)
+    socket.join(gameId)
+    io.to(socket.id).emit('game:joined success', { game, players: currentPlayers })
+    socket.to(gameId).emit('player:joined', socket.user)
+
+  })
+  
 
   socket.on('disconnect', () => {
     console.log('Client disconnected');

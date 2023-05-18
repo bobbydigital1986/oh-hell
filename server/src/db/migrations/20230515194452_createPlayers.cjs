@@ -20,6 +20,7 @@ exports.up = async (knex) => {
             .references("games.id")
         table.timestamp("createdAt").notNullable().defaultTo(knex.fn.now())
         table.timestamp("updatedAt").notNullable().defaultTo(knex.fn.now())
+        table.unique(["userId", "gameId"])
     })
 }
 
