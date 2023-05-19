@@ -25,6 +25,11 @@ class Round extends Model {
         const { Game } = require("./index.js")
         // const numberOfRounds = Game.query().findById(gameId).numberOfRounds
         // const megaRoundGraph = []
+        console.log("roundBuilding Round number", newRoundNumber)
+        let roundNumber = newRoundNumber
+        if (!newRoundNumber) {
+            roundNumber = 1
+        }
 
         let oneRound = [{
             gameId: gameId,
@@ -33,6 +38,7 @@ class Round extends Model {
         }]
         
         const returnOfGraph = await Round.query().insertGraphAndFetch(oneRound)
+        console.log("roundBuidler return of graph", returnOfGraph)
         return returnOfGraph
         // const roundGraph = [
         //     {

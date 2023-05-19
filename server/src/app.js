@@ -76,13 +76,31 @@ io.on('connection', (socket) => {
     socket.user = user
     console.log("socket.user", socket.user)
     const game = await Game.query().findById(gameId)
+    const joinedAction = await joinGame(game, user.id)
     const currentPlayers = await game.$relatedQuery("registrants")
-    const joinedAction = joinGame(game, user.id)
     socket.join(gameId)
     io.to(socket.id).emit('game:joined success', { game, players: currentPlayers })
     // socket.to(gameId).emit('player:joined', socket.user)
     socket.to(gameId).emit('player:joined', {players: currentPlayers})
 
+  })
+
+  socket.on('card:played', async(gameId, userId, trickId, card) => {
+
+    ///SHOULD BE A SERVICE TO HANDLE A CARD PLAY
+      //ADD TO CARD TABLE: TRICKPLAYED AND IF FIRST OF TRICK, TRICKLEADSUIT
+      //CHECK IF THIS IS THE LAST CARD OF THE TRICK
+      ///HANDLE WIN LOGIC FOR ROUND
+  
+    const cardPlayedGraph = []
+    cardPlayedGraph.id = gameId
+    cardPlayedGraph.cards = [
+      {
+        id: card.id,
+        trickPlayedId: trickId,
+        trickLeadSuit: trickId
+      }
+    ]
   })
   
   socket.on('disconnecting', () => {

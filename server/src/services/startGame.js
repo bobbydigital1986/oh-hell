@@ -10,25 +10,31 @@ const startGame = async(gameId, players) => {
     const alternatingPlayersArray = await Game.setDealerOrder(findGame, players)
     console.log("setDealers", alternatingPlayersArray)
     const existingRounds = await Round.query().where("gameId", findGame.id)
-    const newRoundNumber = existingRounds.length + 1
-    const newDealerId = alternatingPlayersArray[newRoundNumber - 1]
-
+    findGame.dealerOrder = alternatingPlayersArray
+    
     let newRound
-    if (existingRounds) {
+    let newRoundNumber
+    if (existingRounds.length > 0) {
+        console.log("caught the existing round", existingRounds)
+        newRoundNumber = existingRounds.length + 1
         //THIS NEEDS TO BE UPDATED - AUTOMATICALLY ASSUMED WERE ON THE FIRST ROUND
-        newRound = existingRounds[0]
+        newRound = existingRounds
     } else {
+        newRoundNumber = 1
+        const newDealerId = alternatingPlayersArray[newRoundNumber - 1]
         newRound = await Round.roundBuilder(gameId, newDealerId, newRoundNumber)
     }
 
     console.log("newRound", newRound)
 
-    const newDeck = await Card.assembleDeck(newRound, players)
+    const newDeck = await Card.assembleDeck(newRound[0], players)
     console.log("newDeck", newDeck)
 
+
     const gamePackage = {
-        round: newRound,
-        deck: newDeck
+        round: newRound[0],
+        deck: newDeck,
+        gameInfo: findGame
     }
 
     return gamePackage

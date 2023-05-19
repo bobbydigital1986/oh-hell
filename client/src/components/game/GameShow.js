@@ -51,10 +51,17 @@ const GameShow = ({ user, socket, ...rest}) => {
             setPlayers(gameStatus.players)
         })
 
+        socket.on('card: played', (card) => {
+            setPlayedCard(card)
+        })
+
         socket.on('game:start success', (gamePackage) => {
             console.log("game:start success", gamePackage)
             setDealtCards(gamePackage.deck)
+            setRound(gamePackage.round)
+            setGameInfo(gamePackage.gameInfo)
             setGameStart(true)
+            setWhosTurn()
         })
 
         
@@ -65,18 +72,48 @@ const GameShow = ({ user, socket, ...rest}) => {
         return () => {socket.disconnect()}
     }, [gameId])
 
+    useEffect((playedCard) => {
+        
+    }, [playedCard])
+
 
     const sendMessage = (newMessage) => {
         socket.emit("chat message", newMessage)
     }
 
     let playerTiles = []
+    let trumpCard
+    if (dealtCards.length > 0) {
+        trumpCard = dealtCards.find(card => card.trump == true)
+    }
+
+    let dealerId
+    let firstUp
+    if (gameInfo.dealerOrder){
+        dealerId = gameInfo.dealerOrder[round.id - 1]
+        nextUp(dealerId)
+    }
+
+    const nextUp = (playerId) => {
+        nextPlayerId = gameInfo.dealerOrder[playerId + 1]
+        setWhosTurn
+    }
+
+    // const dealerId = 1
+
+    const playCard = (card) => {
+        setPlayedCard(card)
+        socket.emit("card:played", (gameInfo.id, user.id, card))
+        //MAY WANT TO NOT SET ANY STATE - JUST BROADCAST AND ALLOW BACKEND TO SET STATE BY REPLYING TO ALL
+    }
+
+
     if (gameInfo) {
         console.log("entered playerTileBuilder")
         for (let i = 0; i < gameInfo.numberOfPlayers; i++) {
-            let tileDealtCards
+            let tileDealtCards = []
             if (dealtCards && players[i]) {
-                tileDealtCards = dealtCards.find(card => card.userId == players[i].id)
+                tileDealtCards = dealtCards.filter(card => card.userId == players[i].id)
                 console.log("found players card")
             } else {
                 tileDealtCards = []
@@ -87,6 +124,7 @@ const GameShow = ({ user, socket, ...rest}) => {
                     key={i}
                     player={players[i]}
                     dealtCards={tileDealtCards}
+                    playCard={playCard}
                 />
             )
             if (players[i]?.id == user.id) {
@@ -97,7 +135,7 @@ const GameShow = ({ user, socket, ...rest}) => {
         }
     }
     let startButtton
-    if (!gameStart) {
+    if (!gameStart && gameInfo.ownerId == user.id) {
         startButtton = (<button type="button" className="button" onClick={handleStart}>Start Game</button>)
     }
     console.log(gameStart)
@@ -113,7 +151,13 @@ const GameShow = ({ user, socket, ...rest}) => {
             </div>
             <div className="cell small-3">
                 <div className="grid-y game-sideboard">
-                    <InfoBoard />
+                    <InfoBoard 
+                        trump={trumpCard}
+                        players={players}
+                        round={round}
+                        dealerId={dealerId}
+                        gameInfo={gameInfo}
+                    />
                     <div className="cell auto chatbox">
                         <Chat
                             user={user}
