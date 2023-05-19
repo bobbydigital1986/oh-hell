@@ -15,6 +15,7 @@ const startGame = async(gameId, players) => {
 
     let newRound
     if (existingRounds) {
+        //THIS NEEDS TO BE UPDATED - AUTOMATICALLY ASSUMED WERE ON THE FIRST ROUND
         newRound = existingRounds[0]
     } else {
         newRound = await Round.roundBuilder(gameId, newDealerId, newRoundNumber)
