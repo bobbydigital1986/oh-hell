@@ -18,6 +18,7 @@ exports.up = async (knex) => {
             .references("users.id")
         table.boolean("acceptingRegistrants")
             .defaultTo(true)
+        table.specificType("dealerOrder", "integer ARRAY")
         table.timestamp("createdAt").notNullable().defaultTo(knex.fn.now())
         table.timestamp("updatedAt").notNullable().defaultTo(knex.fn.now())
     })

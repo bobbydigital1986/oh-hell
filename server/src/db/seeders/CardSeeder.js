@@ -1,4 +1,4 @@
-import { Card } from "../../index.js";
+import { Card } from "../../models/index.js";
 
 class CardSeeder {
     static async seed() {
@@ -23,7 +23,8 @@ class CardSeeder {
                 cards.push(card)
             }
         }
-        await Card.insertGraph(cards)
+        // console.log(cards)
+        await Card.query().insertGraph(cards)
     }
 }
 

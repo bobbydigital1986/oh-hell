@@ -9,7 +9,7 @@ import SignInForm from "./authentication/SignInForm";
 import TopBar from "./layout/TopBar";
 import WelcomePage from "./WelcomePage";
 import GameNew from "./game/GameNew";
-import Game from "./game/Game";
+import GameShow from "./game/GameShow";
 import Chat from "./Chat"
 import AuthenticatedRoute from "./authentication/AuthenticatedRoute";
 
@@ -39,7 +39,7 @@ const App = (props) => {
           {...props}/>
         <AuthenticatedRoute 
           exact path="/game/:gameId" 
-          component={Game} 
+          component={GameShow} 
           user={currentUser}
           {...props}
         />

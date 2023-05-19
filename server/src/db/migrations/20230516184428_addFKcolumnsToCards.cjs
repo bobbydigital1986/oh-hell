@@ -7,10 +7,10 @@
  */
 exports.up = async (knex) => {
     return knex.schema.alterTable("cards", (table) => {
-        table.bigInteger("handId")
+        table.bigInteger("userId")
             .index()
             .unsigned()
-            .references("hands.id")
+            .references("users.id")
         table.bigInteger("trickPlayedId")
             .index()
             .unsigned()
@@ -19,6 +19,13 @@ exports.up = async (knex) => {
             .index()
             .unsigned()
             .references("tricks.id")
+        table.bigInteger("roundId")
+            .index()
+            .unsigned()
+            .references("rounds.id")
+        table.boolean("trump")
+            .defaultTo(false)
+            
     })
 }
 
@@ -27,8 +34,8 @@ exports.up = async (knex) => {
  */
 exports.down = (knex) => {
     return knex.schema.alterTable("cards", (table) => {
-        table.dropColumn("handId")
         table.dropColumn("trickPlayedId")
         table.dropColumn("trickLeadSuit")
+        table.dropColumn("roundId")
     })
 }

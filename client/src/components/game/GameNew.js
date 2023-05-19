@@ -15,15 +15,15 @@ const GameNew = ({ user, socket }) => {
 
         socket.on('game:create success', (gameId) => {
             console.log("socket response", gameId)
-            setGameId(gameId)
+            setGameId(gameId.newGameId)
         })
         
         socket.on('game:create join-existing', (gameId) => {
             console.log("socket response", gameId)
-            setGameId(gameId)
+            setGameId(gameId.existingGameId)
         })
         
-        socket.emit("game:create", { user })
+        socket.emit("game:create", user)
 
         return () => {
             socket.removeAllListeners("room:create success")

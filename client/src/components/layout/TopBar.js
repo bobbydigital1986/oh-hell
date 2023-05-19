@@ -15,9 +15,12 @@ const TopBar = ({ user }) => {
   ];
 
   const authenticatedListItems = [
+    <li className="username menu-text" key={user?.id}>
+      Hello {user?.username}!
+    </li>,
     <li key="sign-out">
       <SignOutButton />
-    </li>,
+    </li>
   ];
 
   return (
