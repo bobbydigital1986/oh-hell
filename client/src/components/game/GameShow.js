@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Chat from "../Chat";
 import PlayerTile from "./PlayerTile";
+import InfoBoard from "./InfoBoard";
 
 
 const GameShow = ({ user, socket, ...rest}) => {
@@ -12,7 +13,7 @@ const GameShow = ({ user, socket, ...rest}) => {
         playerId: null,
         playedCardId: null
     })
-    const [trumpSuit, setTrumpSuit] = useState({})
+    // const [trumpSuit, setTrumpSuit] = useState({})
     const [leadSuit, setLeadSuit] = useState({})
     const [gameInfo, setGameInfo] = useState({})
     const [round, setRound] = useState([])
@@ -25,19 +26,20 @@ const GameShow = ({ user, socket, ...rest}) => {
     const handleStart = () => {
         console.log("handleStart started")
         socket.emit("game:start", {gameId, players})
-        setGameStart(true)
+        // setGameStart(true)
     }
 
     console.log("players", players)
     console.log("gameInfo", gameInfo)
+
     useEffect(() => {
 
         socket.on('chat message', (message) => {
             setMessages((messages) => [message, ...messages]);
         });
 
-        socket.on("player:joined", (player) => {
-            setPlayers([...players, player])
+        socket.on("player:joined", (gameStatus) => {
+            setPlayers(gameStatus.players)
         })
 
         socket.emit('chat message', `${user.username} has joined the game`)
@@ -48,7 +50,21 @@ const GameShow = ({ user, socket, ...rest}) => {
             setGameInfo(gameStatus.game)
             setPlayers(gameStatus.players)
         })
-    },[])    
+
+        socket.on('game:start success', (gamePackage) => {
+            console.log("game:start success", gamePackage)
+            setDealtCards(gamePackage.deck)
+            setGameStart(true)
+        })
+
+        
+    },[])
+    console.log("dealtCards:", dealtCards)
+
+    useEffect(() => {
+        return () => {socket.disconnect()}
+    }, [gameId])
+
 
     const sendMessage = (newMessage) => {
         socket.emit("chat message", newMessage)
@@ -56,10 +72,12 @@ const GameShow = ({ user, socket, ...rest}) => {
 
     let playerTiles = []
     if (gameInfo) {
+        console.log("entered playerTileBuilder")
         for (let i = 0; i < gameInfo.numberOfPlayers; i++) {
             let tileDealtCards
             if (dealtCards && players[i]) {
-                tileDealtCards = dealtCards.find(hand => hand.userId == players[i].id)
+                tileDealtCards = dealtCards.find(card => card.userId == players[i].id)
+                console.log("found players card")
             } else {
                 tileDealtCards = []
             }
@@ -80,7 +98,7 @@ const GameShow = ({ user, socket, ...rest}) => {
     }
     let startButtton
     if (!gameStart) {
-        startButtton = (<button type="button" class="button" onClick={handleStart}>Start Game</button>)
+        startButtton = (<button type="button" className="button" onClick={handleStart}>Start Game</button>)
     }
     console.log(gameStart)
 
@@ -95,7 +113,7 @@ const GameShow = ({ user, socket, ...rest}) => {
             </div>
             <div className="cell small-3">
                 <div className="grid-y game-sideboard">
-                    <h4 className="cell small-4 game-info">Game Info</h4>
+                    <InfoBoard />
                     <div className="cell auto chatbox">
                         <Chat
                             user={user}

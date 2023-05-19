@@ -45,8 +45,8 @@ class Game extends Model {
     }
 
     static async setDealerOrder(findGame, players) {
-        console.log(findGame)
-        console.log(players)
+        console.log("game => findGame", findGame)
+        console.log("game => setDealerOrder", players)
 
         let playerIndex = 0
         let alternatingPlayers = []

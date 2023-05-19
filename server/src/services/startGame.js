@@ -13,11 +13,24 @@ const startGame = async(gameId, players) => {
     const newRoundNumber = existingRounds.length + 1
     const newDealerId = alternatingPlayersArray[newRoundNumber - 1]
 
-    const newRound = await Round.roundBuilder(gameId, newDealerId, newRoundNumber)
+    let newRound
+    if (existingRounds) {
+        newRound = existingRounds[0]
+    } else {
+        newRound = await Round.roundBuilder(gameId, newDealerId, newRoundNumber)
+    }
+
     console.log("newRound", newRound)
 
-    const newDeck = await Card.assembleDeck(newRound[0], players)
+    const newDeck = await Card.assembleDeck(newRound, players)
     console.log("newDeck", newDeck)
+
+    const gamePackage = {
+        round: newRound,
+        deck: newDeck
+    }
+
+    return gamePackage
 
 
     // const roundGraph = [

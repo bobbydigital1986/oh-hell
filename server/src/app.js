@@ -19,6 +19,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 import hbsMiddleware from "express-handlebars";
+
 app.set("views", path.join(__dirname, "../views"));
 app.engine(
   "hbs",
@@ -64,8 +65,9 @@ io.on('connection', (socket) => {
 
   socket.on('game:start', async(gameData) => {
     console.log("entered game start", gameData.gameId, gameData.players)
-    const startedGame = startGame(gameData.gameId, gameData.players)
-    
+    const gamePackage = await startGame(gameData.gameId, gameData.players)
+    // console.log(gamePackage)
+    io.in(gameData.gameId).emit("game:start success", gamePackage)
   })
 
   socket.on('game:joined', async({ gameId, user }) => {
@@ -78,12 +80,19 @@ io.on('connection', (socket) => {
     const joinedAction = joinGame(game, user.id)
     socket.join(gameId)
     io.to(socket.id).emit('game:joined success', { game, players: currentPlayers })
-    socket.to(gameId).emit('player:joined', socket.user)
+    // socket.to(gameId).emit('player:joined', socket.user)
+    socket.to(gameId).emit('player:joined', {players: currentPlayers})
 
   })
   
+  socket.on('disconnecting', () => {
+    console.log("disconnecting user", socket.user)
+    console.log("disconnecting user's room", socket.rooms)
+    console.log("disconnecting user's data", socket.data)
+  })
 
   socket.on('disconnect', () => {
+    // [socket, gameId] = socket.room
     console.log('Client disconnected');
   });
 });
