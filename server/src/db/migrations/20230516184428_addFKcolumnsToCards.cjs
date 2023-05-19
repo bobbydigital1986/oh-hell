@@ -34,7 +34,6 @@ exports.up = async (knex) => {
  */
 exports.down = (knex) => {
     return knex.schema.alterTable("cards", (table) => {
-        table.dropColumnIfExists("handId")
         table.dropColumn("trickPlayedId")
         table.dropColumn("trickLeadSuit")
         table.dropColumn("roundId")
