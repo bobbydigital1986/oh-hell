@@ -6,15 +6,15 @@ class Round extends Model {
     }
 
     static get relationMappings() {
-        const { Hand, Game, Trick} = require("./index.js")
+        const { Game, Trick } = require("./index.js")
 
         return {
-            hands: {
+            tricks: {
                 relation: Model.HasManyRelation,
-                modelClass: Hand,
+                modelClass: Trick,
                 join: {
                     from: "rounds.id",
-                    to: "hands.roundId"
+                    to: "tricks.roundId"
                 }
             }
 
@@ -25,6 +25,11 @@ class Round extends Model {
         const { Game } = require("./index.js")
         // const numberOfRounds = Game.query().findById(gameId).numberOfRounds
         // const megaRoundGraph = []
+        console.log("roundBuilding Round number", newRoundNumber)
+        let roundNumber = newRoundNumber
+        if (!newRoundNumber) {
+            roundNumber = 1
+        }
 
         let oneRound = [{
             gameId: gameId,
@@ -33,7 +38,8 @@ class Round extends Model {
         }]
         
         const returnOfGraph = await Round.query().insertGraphAndFetch(oneRound)
-        return returnOfGraph
+        console.log("roundBuidler return of graph", returnOfGraph)
+        return returnOfGraph[0]
         // const roundGraph = [
         //     {
         //     "#id": `newRound${i}`,

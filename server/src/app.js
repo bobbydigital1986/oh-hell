@@ -13,6 +13,7 @@ import { Game, User, Registration } from "./models/index.js"
 import createGame from "./services/createGame.js";
 import startGame from "./services/startGame.js"
 import joinGame from "./services/joinGame.js"
+import playCardHandler from "./services/playCardHandler.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -64,10 +65,11 @@ io.on('connection', (socket) => {
   })
 
   socket.on('game:start', async(gameData) => {
+    const { gameId } = gameData
     console.log("entered game start", gameData.gameId, gameData.players)
     const gamePackage = await startGame(gameData.gameId, gameData.players)
     // console.log(gamePackage)
-    io.in(gameData.gameId).emit("game:start success", gamePackage)
+    io.in(gameId).emit("game:start success", gamePackage)
   })
 
   socket.on('game:joined', async({ gameId, user }) => {
@@ -76,13 +78,63 @@ io.on('connection', (socket) => {
     socket.user = user
     console.log("socket.user", socket.user)
     const game = await Game.query().findById(gameId)
+    const joinedAction = await joinGame(game, user.id)
     const currentPlayers = await game.$relatedQuery("registrants")
-    const joinedAction = joinGame(game, user.id)
     socket.join(gameId)
     io.to(socket.id).emit('game:joined success', { game, players: currentPlayers })
     // socket.to(gameId).emit('player:joined', socket.user)
     socket.to(gameId).emit('player:joined', {players: currentPlayers})
 
+  })
+
+  socket.on('card:played', async(game, round, trick, card) => {
+    const gameId = game.id
+    console.log(
+      "received on card:played",
+      "game", game,
+      "round", round,
+      "trick", trick,
+      "card", card
+    )
+
+    const playCardReponse = await playCardHandler(game, round, trick, card)
+        
+    console.log("playCardReponse", playCardReponse)
+    if (playCardReponse.trickOver && playCardReponse.roundOver) {
+      io.in(gameId).emit('card:played trickAndRoundOver', playCardReponse)
+        // playCardReponse = {
+        //     trickOver: true,
+        //     roundOver: true,
+        //     winnerId: userId,
+        //     playedCards: [playedCards]
+        // }
+    } else if (playCardReponse.trickOver) {
+      io.in(gameId).emit('card:played trickOver', playCardReponse)
+        // playCardReponse = {
+        //     trickOver: true,
+        //     roundOver: false,
+        //     winnerId: userId,
+        //     playedCards: [playedCards]
+        //     whosTurn: userId
+        //     newTrick: newTrick
+        // }
+    } else {
+      io.in(gameId).emit('card:played nextUp', playCardReponse)
+        // playCardReponse = {
+        //     trickOver: false,
+        //     roundOver: false,
+        //     playedCards: [playedCards]
+        //     whosTurn: userId
+        // }
+    }   
+  })
+
+  socket.on("trick:next", (gameId) => {
+    let trickStarter = {
+      cardsPlayed: [],
+      winnerId: null
+    }
+    io.in(gameId).emit("trick:next proceed")
   })
   
   socket.on('disconnecting', () => {
