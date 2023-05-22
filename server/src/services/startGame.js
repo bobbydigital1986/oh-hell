@@ -1,4 +1,4 @@
-import { Card, Game, Round } from "../models/index.js"
+import { Card, Game, Round, Trick } from "../models/index.js"
 
 
 const startGame = async(gameId, players) => {
@@ -18,7 +18,7 @@ const startGame = async(gameId, players) => {
         console.log("caught the existing round", existingRounds)
         newRoundNumber = existingRounds.length + 1
         //THIS NEEDS TO BE UPDATED - AUTOMATICALLY ASSUMED WERE ON THE FIRST ROUND
-        newRound = existingRounds
+        newRound = existingRounds[0]
     } else {
         newRoundNumber = 1
         const newDealerId = alternatingPlayersArray[newRoundNumber - 1]
@@ -27,14 +27,16 @@ const startGame = async(gameId, players) => {
 
     console.log("newRound", newRound)
 
-    const newDeck = await Card.assembleDeck(newRound[0], players)
+    const newDeck = await Card.assembleDeck(newRound, players)
     console.log("newDeck", newDeck)
 
+    let newTrick = await Trick.trickBuilder(newRound)
 
     const gamePackage = {
-        round: newRound[0],
-        deck: newDeck,
-        gameInfo: findGame
+        gameInfo: findGame,
+        round: newRound,
+        trick: newTrick,
+        deck: newDeck
     }
 
     return gamePackage

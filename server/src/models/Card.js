@@ -48,18 +48,23 @@ class Card extends Model {
         console.log("totalCardsToDeal", totalCardsToDeal)
         let playerIndex = 0
         let finalDeck = []
+        let trumpSuitId
         for (let i = 0; i < totalCardsToDeal; i++) {
             
-            if (cardsDealt % cardsPerPlayer == 0 && cardsDealt != 0) {
-                console.log(cardsDealt, i)
+            if ((cardsDealt - 1) % cardsPerPlayer == 0 && cardsDealt != 1 && cardsDealt != 0) {
+                console.log("Caught the playerIndex bump", cardsDealt, i)
                 playerIndex++
             }
-            if ((cardsDealt + 1) == totalCardsToDeal) {
+            if (i === 0) {
                 shuffledDeck[i].trump = true
+                trumpSuitId = shuffledDeck[i].suitId
                 cardsDealt++
             } else {
                 console.log("playerIndex", playerIndex)
                 shuffledDeck[i].userId = players[playerIndex].id
+                if (shuffledDeck[i].suitId == trumpSuitId) {
+                    shuffledDeck[i].trump = true
+                }
                 cardsDealt++
             }
             finalDeck.push(shuffledDeck[i])

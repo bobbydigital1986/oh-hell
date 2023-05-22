@@ -6,15 +6,15 @@ class Round extends Model {
     }
 
     static get relationMappings() {
-        const { Hand, Game, Trick} = require("./index.js")
+        const { Game, Trick } = require("./index.js")
 
         return {
-            hands: {
+            tricks: {
                 relation: Model.HasManyRelation,
-                modelClass: Hand,
+                modelClass: Trick,
                 join: {
                     from: "rounds.id",
-                    to: "hands.roundId"
+                    to: "tricks.roundId"
                 }
             }
 
@@ -39,7 +39,7 @@ class Round extends Model {
         
         const returnOfGraph = await Round.query().insertGraphAndFetch(oneRound)
         console.log("roundBuidler return of graph", returnOfGraph)
-        return returnOfGraph
+        return returnOfGraph[0]
         // const roundGraph = [
         //     {
         //     "#id": `newRound${i}`,

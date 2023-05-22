@@ -1,13 +1,13 @@
 import React from "react";
 
-const PlayerCard = ({ card, playCard }) => {
+const PlayerCard = ({ card, playCard, user }) => {
     console.log("PlayerCard", card)
 
     const handleClick = (event) => {
         playCard(card)
     }
 
-    return (
+    let cardController = (
         <div className="playing-card" onClick={handleClick}>
             <div className="cmon grid-x align-spaced">
                 <div className="cell small-4 align-self-top"><div>{card.displayString}</div></div>
@@ -15,6 +15,21 @@ const PlayerCard = ({ card, playCard }) => {
                 <div className="cell small-4 align-self-bottom"><div>{card.displayString}</div></div>
             </div>
         </div>
+        
+    )
+
+    if (card.userId != user.id) {
+        cardController = (
+            <div className="playing-card other-players-card">
+                <h1 className="cell">?</h1>
+            </div>
+        )
+    }
+
+    return (
+        <>
+            {cardController}
+        </>
     )
 
 }

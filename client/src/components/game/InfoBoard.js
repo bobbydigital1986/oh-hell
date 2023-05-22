@@ -22,7 +22,7 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId }) => {
             <h4>Info</h4>
             <ul>
                 <li>Players: {playerNames.join(", ")}</li>
-                <li>Round: {round[0]?.id}</li>
+                <li>Round: {round?.id}</li>
                 <li>Dealer: {dealerName}</li>
                 <li>Trump: {trump?.suitUnicode}</li>
             </ul>

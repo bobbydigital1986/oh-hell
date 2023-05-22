@@ -71,7 +71,7 @@ h4 {
   background-color: white;
   border: 2px solid black;
   border-radius: .5em;
-  height: 30%;
+  height: 24%;
   width: 16%;
 }
 
@@ -81,4 +81,15 @@ h4 {
 
 .cmon {
   height: 100%
+}
+
+.played-card {
+  padding: 4px;
+  height: 100px;
+  width: 4em;
+}
+
+.winner {
+  background-color: blue;
+  color: white;
 }

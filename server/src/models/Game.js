@@ -47,7 +47,7 @@ class Game extends Model {
     static async setDealerOrder(findGame, players) {
         console.log("game => findGame", findGame)
         console.log("game => setDealerOrder", players)
-
+        const numberOfPlayers = players.length
         let playerIndex = 0
         let alternatingPlayers = []
         for (let i = 0; i < findGame.numberOfRounds; i++) {
@@ -60,7 +60,7 @@ class Game extends Model {
                 playerIndex = 0
             }
         }
-        const updatedGame = await findGame.$query().patch({ dealerOrder: alternatingPlayers })
+        const updatedGame = await findGame.$query().patch({ dealerOrder: alternatingPlayers, numberOfPlayers })
         return alternatingPlayers
     }
 }
