@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PlayerCard from "./PlayerCard";
 import PlayedCard from "./PlayedCard"
 
-const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards, leadSuit, trickOver, startNextTrick }) => {
+const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards, leadSuit, trickOver, nextPhase, roundOver }) => {
 
     let slotName
     let slotStyle
@@ -67,12 +67,29 @@ const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards,
     console.log(trickOver)
     if (trickOver.winnerId == player?.id) {
         console.log("winner found")
+
+        if (roundOver) {
+            //Trick and Round over
+            whosTurnIcon = (
+                <div className="cell small-3 winner" onClick={nextPhase}>
+                    <h5>{player?.username} Won!</h5>
+                    <p>Click for next round</p>
+                </div>
+            )
+
+        } else {
+            //Trick over
+            whosTurnIcon = (
+                <div className="cell small-3 winner" onClick={nextPhase}>
+                    <h5>{player?.username} Won!</h5>
+                    <p>Click for next trick</p>
+                </div>
+            )
+        }
+    } else if (whosTurn === player?.id) {
         whosTurnIcon = (
-            <div className="cell small-3 winner" onClick={startNextTrick}>
-                <h5>{player?.username} Won!</h5>
-                <p>Click for next trick</p>
-            </div>
-            )    } else if (whosTurn === player?.id) {
+            <div className="cell small-3">{player?.username}'s turn</div>
+        )
         console.log("designated next turn")
     }
 

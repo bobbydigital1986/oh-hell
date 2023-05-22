@@ -133,14 +133,13 @@ const GameShow = ({ user, socket, ...rest}) => {
         return () => {socket.disconnect()}
     }, [gameId])
 
-    const startNextTrick = () => {
-        socket.emit("trick:next", (gameInfo.id))
+    const nextPhase = () => {
+        if (roundOver) {
+            socket.emit("round:next", (gameInfo.id))
+        } else {
+            socket.emit("trick:next", (gameInfo.id))
+        }
     }
-
-    // useEffect((playedCard) => {
-        
-    // }, [playedCard])
-
 
     const sendMessage = (newMessage) => {
         socket.emit("chat message", newMessage)
@@ -149,10 +148,6 @@ const GameShow = ({ user, socket, ...rest}) => {
     let trumpCard
     if (dealtCards.length > 0) {
         trumpCard = dealtCards.find(card => card.trump == true)
-    }
-
-    const nextUp = (dealerId) => {
-        
     }
 
     const playCard = (card) => {
@@ -185,7 +180,8 @@ const GameShow = ({ user, socket, ...rest}) => {
                     playedCards={playedCards}
                     leadSuit={leadSuit}
                     trickOver={trickOver}
-                    startNextTrick={startNextTrick}
+                    nextPhase={nextPhase}
+                    roundOver={roundOver}
                 />
             )
             if (players[i]?.id == user.id) {
