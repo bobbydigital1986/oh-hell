@@ -6,10 +6,8 @@ const createGame = async(user) => {
     console.log("createGame", user)
     if (!findGame) {
         const newGame = await Game.query().insertAndFetch({ ownerId: user.id })
-        // relateRegistrants(newGame)
         return { newGame }
     } else {
-        // relateRegistrants(findGame)
         return { findGame }
     }
 }
