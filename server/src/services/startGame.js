@@ -6,6 +6,7 @@ const startGame = async(gameId, players) => {
     console.log("startGame players", players)
     
     const findGame = await Game.query().findById(gameId)
+    console.log("startGame => findGame", findGame)
 
     const alternatingPlayersArray = await Game.setDealerOrder(findGame, players)
     console.log("setDealers", alternatingPlayersArray)
@@ -31,13 +32,14 @@ const startGame = async(gameId, players) => {
     console.log("newDeck", newDeck)
 
     let newTrick = await Trick.trickBuilder(newRound)
-
+    await findGame.$query().patch({ acceptingRegistrants: false })
     const gamePackage = {
         gameInfo: findGame,
         round: newRound,
         trick: newTrick,
         deck: newDeck
     }
+
 
     return gamePackage
 

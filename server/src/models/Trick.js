@@ -58,29 +58,37 @@ class Trick extends Model {
         const trickPlayed = await Trick.query().findById(trick.id)
         console.log("determineTrickWinner trickPlayed query", trickPlayed)
         const freshCardsPlayedQuery = await trickPlayed.$relatedQuery("cardsPlayed")
+        console.log("Trick => determineTrickWinner freshCardsPlayedQuery", freshCardsPlayedQuery)
         const playersAndComputedScore = freshCardsPlayedQuery.map(card => {
             let cardObject = {
                 userId: card.userId,
                 trickPlayedId: card.trickPlayedId,
                 roundId: card.roundId,
+                cardDisplayString: card.displayString,
+                cardBaseValue: card.baseValue,
+                cardtrickLeadSuit: card.trickLeadSuit
             }
             if (card.trump === true) {
-                card.computedValue = card.baseValue * 14
+                cardObject.computedValue = card.baseValue * 14
                 return cardObject
             } else if (card.trickLeadSuit == card.trickPlayedId) {
-                card.computedValue = card.baseValue
+                cardObject.computedValue = card.baseValue
                 return cardObject
             } else {
-                card.computedValue = 0
+                cardObject.computedValue = 0
                 return cardObject
             }
         })
         const compareComputedValue = (a, b) => {
             return a.computedValue - b.computedValue
         }
+        console.log("determineTrickwinner playersAndComputedScore", playersAndComputedScore)
         const sortedScores = playersAndComputedScore.sort(compareComputedValue).reverse()
+        console.log("determineTrickwinner sortedScores", sortedScores)
         const winner = sortedScores[0]
+        console.log("determineTrickwinner winner", winner)
         const setWinnerOfTrick = await trickPlayed.$relatedQuery("winner").relate(winner.userId)
+        console.log("determineTrickwinner setWinnerOfTrick", setWinnerOfTrick)
         return winner
     }
 }

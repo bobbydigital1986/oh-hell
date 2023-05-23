@@ -1,11 +1,18 @@
 import React from "react";
 
-const PlayerCard = ({ card, playCard, user }) => {
-    console.log("PlayerCard", card)
+const PlayerCard = ({ card, playCard, user, canPlay }) => {
+    // console.log("PlayerCard card", card)
+    
+
 
     const handleClick = (event) => {
-        playCard(card)
+        if (!canPlay) {
+            alert("Follow lead suit...or it's not your turn lol")
+        } else {
+            playCard(card)
+        }
     }
+    
 
     let cardController = (
         <div className="playing-card" onClick={handleClick}>

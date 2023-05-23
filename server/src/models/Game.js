@@ -6,7 +6,7 @@ class Game extends Model {
     }
 
     static get relationMappings() {
-        const { User, Round, Registration } = require("./index.js")
+        const { User, Round, Registration, Trick } = require("./index.js")
 
         return {
             owner: {
@@ -19,6 +19,16 @@ class Game extends Model {
             },
 
             rounds: {
+                relation: Model.HasManyRelation,
+                modelClass: Round,
+                join: {
+                    from: "games.id",
+                    to: "rounds.gameId"
+                }
+
+            },
+
+            currentRound: {
                 relation: Model.BelongsToOne,
                 modelClass: Round,
                 join: {
@@ -27,7 +37,7 @@ class Game extends Model {
                 }
             },
 
-            registrants: {
+            players: {
                 relation: Model.ManyToManyRelation,
                 modelClass: User,
                 join: {
@@ -39,8 +49,6 @@ class Game extends Model {
                     to: "users.id"
                 }
             }
-
-
         }
     }
 
@@ -48,12 +56,15 @@ class Game extends Model {
         console.log("game => findGame", findGame)
         console.log("game => setDealerOrder", players)
         const numberOfPlayers = players.length
+        console.log("Game => setDealerOrder numberOfPlayers", numberOfPlayers)
         let playerIndex = 0
         let alternatingPlayers = []
         for (let i = 0; i < findGame.numberOfRounds; i++) {
             console.log(alternatingPlayers)
             console.log("playerIndex", playerIndex)
             console.log(i)
+            console.log("players[playerIndex]", players[playerIndex])
+            console.log("players[playerIndex].id", players[playerIndex].id)
             alternatingPlayers.push(players[playerIndex].id)
             playerIndex++
             if (i >= players.length - 1) {

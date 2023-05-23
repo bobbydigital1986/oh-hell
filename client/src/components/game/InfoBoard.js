@@ -1,7 +1,7 @@
 import React from "react";
 
-const InfoBoard = ({ trump, players, round, gameInfo, dealerId }) => {
-
+const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit }) => {
+    console.log("leadSuit", leadSuit)
     console.log("Trump", trump)
     console.log("Round", round)
 
@@ -21,10 +21,11 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId }) => {
         <div className="cell small-4 game-info">
             <h4>Info</h4>
             <ul>
+                <li>Trump: {trump?.suitUnicode}{trump?.suit}{trump?.suitUnicode}</li>
+                <li>LeadSuit: {leadSuit?.suitUnicode}{leadSuit?.suit}{leadSuit?.suitUnicode}</li>
                 <li>Players: {playerNames.join(", ")}</li>
                 <li>Round: {round?.id}</li>
                 <li>Dealer: {dealerName}</li>
-                <li>Trump: {trump?.suitUnicode}</li>
             </ul>
 
         </div>

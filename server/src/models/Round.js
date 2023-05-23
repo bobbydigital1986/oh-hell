@@ -6,7 +6,7 @@ class Round extends Model {
     }
 
     static get relationMappings() {
-        const { Game, Trick } = require("./index.js")
+        const { Card, Trick } = require("./index.js")
 
         return {
             tricks: {
@@ -15,6 +15,15 @@ class Round extends Model {
                 join: {
                     from: "rounds.id",
                     to: "tricks.roundId"
+                }
+            },
+
+            cards: {
+                relation: Model.HasManyRelation,
+                modelClass: Card,
+                join: {
+                    from: "rounds.id",
+                    to: "cards.roundId"
                 }
             }
 
@@ -25,6 +34,8 @@ class Round extends Model {
         const { Game } = require("./index.js")
         // const numberOfRounds = Game.query().findById(gameId).numberOfRounds
         // const megaRoundGraph = []
+        console.log("roundBuilding gameIdr", gameId)
+        console.log("roundBuilding newDealerId", newDealerId)
         console.log("roundBuilding Round number", newRoundNumber)
         let roundNumber = newRoundNumber
         if (!newRoundNumber) {
