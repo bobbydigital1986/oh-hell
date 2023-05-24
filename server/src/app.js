@@ -101,29 +101,36 @@ io.on('connection', (socket) => {
     const playCardReponse = await playCardHandler(game, round, trick, card)
         
     console.log("playCardReponse", playCardReponse)
-    if (playCardReponse.trickOver && playCardReponse.roundOver == false) {
+    if (playCardReponse.gameOver.whatsOver == "trick") {
+      console.log("playCardReponse.gameOver.whatsOver == trick")
       io.in(gameId).emit('card:played trickOver', playCardReponse)
         // playCardReponse = {
-        //     trickOver: true,
-        //     roundOver: false,
-        //     winnerId: userId,
+        //     gameOver: {
+        //          whatsOver: "trick",
+        //          winnerId: userId
+        //     }
         //     playedCards: [playedCards]
         //     whosTurn: userId
         //     newTrick: newTrick
         // }
-    } else if (playCardReponse.trickOver && playCardReponse.roundOver) {
+    } else if (playCardReponse.gameOver.whatsOver == "round") {
+      console.log("playCardReponse.gameOver.whatsOver == round")
       io.in(gameId).emit('card:played trickAndRoundOver', playCardReponse)
         // playCardReponse = {
-        //     trickOver: true,
-        //     roundOver: true,
-        //     winnerId: userId,
-        //     playedCards: [playedCards]
+        //     gameOver: {
+        //          whatsOver: "round",
+        //          winnerId: userId
+        //     }
+        //     playedCards: [playedCards],
+        //     whosTurn???? <--- look into this
         // }
     } else {
       io.in(gameId).emit('card:played success', playCardReponse)
         // playCardReponse = {
-        //     trickOver: false,
-        //     roundOver: false,
+        //     gameOver: {
+        //          whatsOver: "",
+        //          winnerId: null
+        //     }
         //     playedCards: [playedCards]
         //     whosTurn: userId
         // }
@@ -134,7 +141,8 @@ io.on('connection', (socket) => {
     //Need to pass the winner of the previous trick as the player whosUp
     let newTrickPackage = {
       lastTrickWinnerId: null,
-      newTrick: {}
+      newTrick: {},
+      dealtCards: []
     }
     const latestRound = await Game.relatedQuery("rounds")
       .for(gameId)
@@ -147,6 +155,7 @@ io.on('connection', (socket) => {
       .orderBy("createdAt", 'desc')
       .limit(1)
     console.log("trick:next lastWinner", lastWinner[0].winnerId)
+
     newTrickPackage.lastTrickWinnerId = lastWinner[0].winnerId
     
     newTrickPackage.newTrick = await Trick.query().insertAndFetch({ roundId: latestRound[0].id })

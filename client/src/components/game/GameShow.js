@@ -12,16 +12,20 @@ const GameShow = ({ user, socket, ...rest}) => {
     const [whosTurn, setWhosTurn] = useState(null)
     const [gameInfo, setGameInfo] = useState({})
     const [gameStarted, setGameStarted] = useState(false)
-    const [trickOver, setTrickOver] = useState({
-        isOver: false,
-        winnerId: null
-    })
-    const [trick, setTrick] = useState({})
     const [leadSuit, setLeadSuit] = useState({})
-    const [roundOver, setRoundOver] = useState(false)
     const [round, setRound] = useState([])
     const [messages, setMessages] = useState([])
     const [dealerId, setDealerId] = useState(null)
+    const [trick, setTrick] = useState({})
+    // const [trickOver, setTrickOver] = useState({
+    //     isOver: false,
+    //     winnerId: null
+    // })
+    // const [roundOver, setRoundOver] = useState(false)
+    const [gameOver, setGameOver] = useState({
+        whatsOver: "", //trick, round, game
+        winnerId: null // id of winning user
+    })
 
     const { gameId } = rest.computedMatch.params
     // console.log("Game User", user)
@@ -34,8 +38,9 @@ const GameShow = ({ user, socket, ...rest}) => {
 
     // console.log("players", players)
     console.log("GameShow gameInfo", gameInfo)
-    console.log("GameShow roundOver", roundOver)
-    console.log("GameShow trickOver", trickOver)
+    console.log("GameShow gameOver", gameOver)
+    // console.log("GameShow roundOver", roundOver)
+    // console.log("GameShow trickOver", trickOver)
     console.log("GameShow whosTurn", whosTurn)
     console.log("GameShow players", players)
     console.log("GameShow gameStarted", gameStarted)
@@ -77,18 +82,23 @@ const GameShow = ({ user, socket, ...rest}) => {
         socket.on('card:played trickAndRoundOver', (playCardReponse) => {
             console.log('card:played trickAndRoundOver')
             setPlayedCards(playCardReponse.playedCards)
-            setTrickOver({
-                isOver: playCardReponse.trickOver,
-                winnerId: playCardReponse.winnerId
+            // setTrickOver({
+            //     isOver: playCardReponse.trickOver,
+            //     winnerId: playCardReponse.winnerId
+            // })
+            setGameOver({
+                whatsOver: "round",
+                winnerId: playCardReponse.gameOver.winnerId
             })
+            // setRoundOver(true)
             setDealerId(null)
             setWhosTurn(null)
-            setRoundOver(true)
             // setLeadSuit({})
         // playCardReponse = {
-        //     trickOver: true,
-        //     roundOver: false,
-        //     winnerId: userId,
+        //     gameOver: {
+        //        whatsOver: round,
+        //        winnerId: 1
+        //     }
         //     playedCards: [playedCards]
         //     whosTurn: userId
         //     newTrick: newTrick
@@ -99,9 +109,13 @@ const GameShow = ({ user, socket, ...rest}) => {
         socket.on('card:played trickOver', (playCardReponse) => {
             console.log('card:played trickOver')
             setPlayedCards(playCardReponse.playedCards)
-            setTrickOver({
-                isOver: true,
-                winnerId: playCardReponse.winnerId
+            // setTrickOver({
+            //     isOver: true,
+            //     winnerId: playCardReponse.winnerId
+            // })
+            setGameOver({
+                whatsOver: "trick",
+                winnerId: playCardReponse.gameOver.winnerId
             })
             setWhosTurn(null)
             // setLeadSuit({})
@@ -134,8 +148,12 @@ const GameShow = ({ user, socket, ...rest}) => {
             setPlayedCards([])
             setTrick(newTrickPackage.newTrick)
             setDealtCards(newTrickPackage.dealtCards)
-            setTrickOver({
-                isOver: false,
+            // setTrickOver({
+            //     isOver: false,
+            //     winnerId: null
+            // })
+            setGameOver({
+                whatsOver: "",
                 winnerId: null
             })
             setLeadSuit({})
@@ -145,10 +163,15 @@ const GameShow = ({ user, socket, ...rest}) => {
         socket.on("round:next success", (roundPackage) => {
             console.log("round:next success", roundPackage)
             // const dealer = roundPackage.dealerOrder[round.numberOfTricks]
-            setTrickOver({
-                isOver: false,
+            // setTrickOver({
+            //     isOver: false,
+            //     winnerId: null
+            // })
+            setGameOver({
+                whatsOver: "",
                 winnerId: null
             })
+            // setRoundOver(false)
             setPlayedCards([])
             setLeadSuit({})
             setDealtCards(roundPackage.deck)
@@ -157,7 +180,6 @@ const GameShow = ({ user, socket, ...rest}) => {
             setDealtCards(roundPackage.deck)
             setWhosTurn(roundPackage.whosTurn)
             setDealerId(roundPackage.round.dealerId)
-            setRoundOver(false)
         })
 
     },[])
@@ -169,8 +191,9 @@ const GameShow = ({ user, socket, ...rest}) => {
     // console.log("dealtCards:", dealtCards)
 
     const nextPhase = () => {
-        console.log("nextPhase roundOver", roundOver)
-        if (roundOver) {
+        // console.log("nextPhase roundOver", roundOver)
+        console.log("nextPhase gameOver", gameOver)
+        if (gameOver.whatsOver == "round") {
             console.log("gameShow caught the roundOver if")
             socket.emit("round:next", (gameInfo))
         } else {
@@ -217,9 +240,10 @@ const GameShow = ({ user, socket, ...rest}) => {
                     whosTurn={whosTurn}
                     playedCards={playedCards}
                     leadSuit={leadSuit}
-                    trickOver={trickOver}
+                    gameOver={gameOver}
+                    // trickOver={trickOver}
+                    // roundOver={roundOver}
                     nextPhase={nextPhase}
-                    roundOver={roundOver}
                 />
             )
             if (players[i]?.id == user.id) {

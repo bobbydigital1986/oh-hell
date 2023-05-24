@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PlayerCard from "./PlayerCard";
 import PlayedCard from "./PlayedCard"
 
-const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards, leadSuit, trickOver, nextPhase, roundOver }) => {
+const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards, leadSuit, nextPhase, gameOver }) => {
 
     let slotName
     let slotStyle
@@ -66,12 +66,13 @@ const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards,
     }
 
     let whosTurnIcon = <div className="cell small-3"></div>
-    console.log("PlayerTile trickOver", trickOver)
-    console.log("PlayerTile roundOver", roundOver)
-    if (trickOver.winnerId == player?.id && player) {
+    // console.log("PlayerTile trickOver", trickOver)
+    // console.log("PlayerTile roundOver", roundOver)
+    console.log("PlayerTile gameOver", gameOver)
+    if (gameOver.winnerId == player?.id && player) {
         // console.log("winner found")
 
-        if (roundOver) {
+        if (gameOver.whatsOver == "round") {
             //Trick and Round over
             console.log("Game Tile caught the roundOver if")
             whosTurnIcon = (

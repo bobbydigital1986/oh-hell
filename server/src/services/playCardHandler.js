@@ -4,8 +4,10 @@ import { Game, Round, Trick, Card } from "../models/index.js"
 const playCardHandler = async(game, round, trick, card) => {
     
     let playCardReponse = {
-        trickOver: false,
-        roundOver: false,
+        gameOver: {
+            whatsOver: "", // trick, round, game
+            winnerId: null
+        },
         playedCards: []
     }
     console.log("playCard game", game)
@@ -61,11 +63,13 @@ const playCardHandler = async(game, round, trick, card) => {
         if (cardsPlayedPreviously.length + 1 == game.numberOfPlayers) {
             //Trick is over, evaluate winner & evaluate if round is over
             console.log("Trick is over, evaluate winner & evaluate if round is over")
-            playCardReponse.trickOver = true
+            playCardReponse.gameOver.whatsOver = "trick"
 
             const winner = await Trick.determineTrickWinner(trick)
             console.log("playCard Trick winner", winner)
-            playCardReponse.winnerId = winner.userId
+            // playCardReponse.winnerId = winner.userId
+            playCardReponse.gameOver.winnerId = winner.userId
+
             const tricksPlayedSoFar = await Trick.query().where('roundId', round.id)
             console.log("tricksPlayedSoFar", )
             if (tricksPlayedSoFar.length < round.numberOfTricks) {
@@ -78,7 +82,9 @@ const playCardHandler = async(game, round, trick, card) => {
             } else {
                 //Round over
                 console.log("Play card round over")
-                playCardReponse.roundOver = true
+                // playCardReponse.roundOver = true
+                playCardReponse.gameOver.whatsOver = "round"
+
                 return playCardReponse
 
 
@@ -97,13 +103,13 @@ const playCardHandler = async(game, round, trick, card) => {
         }
     }
         // playCardReponse = {
-        //     trickOver: false,
-        //     roundOver: false,
+        //     gameOver: {
+        //         whatsOver: trick or round or game,
+        //         winnerId: 1
+        //     }, 
         //     winnerId: userId,
         //     playedCards: [playedCards],
         //     whosTurn: userId,
-        //     AXED newTrick: newTrick,
-        //     AXED newRound: newRound,
         //     leadSuit: leadSuit
         // }
 
