@@ -190,8 +190,8 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log("Server started on port 3000")
+server.listen(configuration.web.port, configuration.web.host, () => {
+  console.log(`Server is listening on port ${configuration.web.port}`)
 })
 
 export default app;
