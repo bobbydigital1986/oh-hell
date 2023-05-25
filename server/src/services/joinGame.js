@@ -1,4 +1,4 @@
-import { Registration, User } from "../models/index.js";
+import { Registration, Game } from "../models/index.js";
 
 const joinGame = async(game, userId) => {
 
@@ -16,7 +16,7 @@ const joinGame = async(game, userId) => {
                 console.log("missed the if")
                 await Registration.query().insert({ userId: userId, gameId: game.id })
                 if (existingRegistrants.length + 1 >= game.numberOfPlayers) {
-                        await game.$patch({ acceptingRegistrants: false })
+                        await Game.query().patchAndFetchById(game.id, { acceptingRegistrants: false })
                 }
         }
 }
