@@ -54,8 +54,8 @@ io.on('connection', (socket) => {
     io.emit('chat message', message);
   });
 
-  socket.on('game:create', async(user) => {
-    const selectedGame = await createGame(user)
+  socket.on('game:create', async(user, numberOfPlayers, numberOfRounds) => {
+    const selectedGame = await createGame(user, numberOfPlayers, numberOfRounds)
     // console.log(selectedGame)
     // console.log("selectedGame", selectedGame)
     if (selectedGame.findGame) {

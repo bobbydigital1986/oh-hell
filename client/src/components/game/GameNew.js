@@ -23,7 +23,7 @@ const GameNew = ({ user, socket }) => {
             setGameId(gameId.existingGameId)
         })
         
-        socket.emit("game:create", user)
+        socket.emit("game:create", user, 2, 3)
 
         return () => {
             socket.removeAllListeners("room:create success")

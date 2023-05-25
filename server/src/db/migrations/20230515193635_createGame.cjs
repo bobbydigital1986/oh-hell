@@ -9,9 +9,7 @@ exports.up = async (knex) => {
     return knex.schema.createTable("games", (table) => {
         table.bigIncrements("id")
         table.integer("numberOfPlayers")
-            .defaultTo(3)
         table.integer("numberOfRounds")
-            .defaultTo(3)
         table.bigInteger("ownerId")
             .unsigned()
             .index()
