@@ -1,27 +1,27 @@
 import { Card, Game, Round, Trick } from "../models/index.js"
 
-const newRoundStarter = async (gameId) => {
+const newRoundStarter = async (gameId, existingRound) => {
     console.log("BEGIN LOGS IN newRoundStarter")
     const game = await Game.query().findById(gameId)
     console.log("game",game)
-    const existingRounds = await Round.query().where("gameId", gameId)
-    console.log("existingRounds",existingRounds)
+    // const existingRounds = await Round.query().where("gameId", gameId)
+    // console.log("existingRounds",existingRounds)
 
-    const existRoundCount = existingRounds.length
-    console.log("existRoundCount",existRoundCount)
-
+    // const existRoundCount = existingRounds.length
+    // console.log("existRoundCount",existRoundCount)
     
-    const newDealerId = game.dealerOrder[existRoundCount]
-    console.log("newDealerId",newDealerId)
-    let whosFirst = game.dealerOrder[existRoundCount + 1]
+    const newDealerId = game.dealerOrder[existingRound.numberOfTricks]
+    console.log("newDealerId", newDealerId)
+
+    const newRoundNumberOfTricks = existingRound.numberOfTricks + 1
+    let whosFirst = game.dealerOrder[newRoundNumberOfTricks]
     if (!whosFirst) {
         whosFirst = game.dealerOrder[0]
     }
 
-    const newRoundNumber = existRoundCount + 1
-    console.log("newRoundNumber",newRoundNumber)
+    console.log("newRoundNumber",newRoundNumberOfTricks)
 
-    const newRound =await Round.roundBuilder(game.id, newDealerId, newRoundNumber)
+    const newRound =await Round.roundBuilder(game.id, newDealerId, newRoundNumberOfTricks)
 
     const players = await game.$relatedQuery("players")
 

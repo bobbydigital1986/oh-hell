@@ -13,15 +13,11 @@ const GameShow = ({ user, socket, ...rest}) => {
     const [gameInfo, setGameInfo] = useState({})
     const [gameStarted, setGameStarted] = useState(false)
     const [leadSuit, setLeadSuit] = useState({})
-    const [round, setRound] = useState([])
+    const [round, setRound] = useState({})
     const [messages, setMessages] = useState([])
     const [dealerId, setDealerId] = useState(null)
     const [trick, setTrick] = useState({})
-    // const [trickOver, setTrickOver] = useState({
-    //     isOver: false,
-    //     winnerId: null
-    // })
-    // const [roundOver, setRoundOver] = useState(false)
+    const [betScores, setBetScores] = ([])
     const [gameOver, setGameOver] = useState({
         whatsOver: "", //trick, round, game
         winnerId: null // id of winning user
@@ -32,7 +28,7 @@ const GameShow = ({ user, socket, ...rest}) => {
 
     const handleStart = () => {
         console.log("handleStart started")
-        socket.emit("game:start", {gameId, players})
+        socket.emit("game:start", gameInfo, players)
         // setGameStarted(true)
     }
 
@@ -76,7 +72,7 @@ const GameShow = ({ user, socket, ...rest}) => {
             setGameStarted(true)
             setWhosTurn(gamePackage.gameInfo.dealerOrder[1])
             setTrick(gamePackage.trick)
-            setDealerId(gamePackage.gameInfo.dealerOrder[1])
+            setDealerId(gamePackage.round.dealerId)
         })
         
         socket.on('card:played trickAndRoundOver', (playCardReponse) => {
@@ -91,7 +87,7 @@ const GameShow = ({ user, socket, ...rest}) => {
                 winnerId: playCardReponse.gameOver.winnerId
             })
             // setRoundOver(true)
-            setDealerId(null)
+            // setDealerId(null)
             setWhosTurn(null)
             // setLeadSuit({})
         // playCardReponse = {
@@ -190,12 +186,20 @@ const GameShow = ({ user, socket, ...rest}) => {
 
     // console.log("dealtCards:", dealtCards)
 
+    const betSubmitter = () => {
+
+    }
+
+    if (players?.length >= gameInfo?.numberOfPlayers && gameInfo.acceptingRegistrants && !gameStarted) {
+        socket.emit("game: full", gameInfo)
+    }
+
     const nextPhase = () => {
         // console.log("nextPhase roundOver", roundOver)
         console.log("nextPhase gameOver", gameOver)
         if (gameOver.whatsOver == "round") {
             console.log("gameShow caught the roundOver if")
-            socket.emit("round:next", (gameInfo))
+            socket.emit("round:next", gameInfo, round)
         } else {
             console.log("gameShow missed the roundOver if")
             socket.emit("trick:next", (gameInfo.id))
@@ -241,9 +245,9 @@ const GameShow = ({ user, socket, ...rest}) => {
                     playedCards={playedCards}
                     leadSuit={leadSuit}
                     gameOver={gameOver}
-                    // trickOver={trickOver}
-                    // roundOver={roundOver}
                     nextPhase={nextPhase}
+                    betSubmitter={betSubmitter}
+                    betScores={betScores}
                 />
             )
             if (players[i]?.id == user.id) {
@@ -278,6 +282,7 @@ const GameShow = ({ user, socket, ...rest}) => {
                         dealerId={dealerId}
                         gameInfo={gameInfo}
                         leadSuit={leadSuit}
+                        betScores={betScores}
                     />
                     <div className="cell auto chatbox">
                         <Chat

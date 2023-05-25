@@ -6,7 +6,8 @@ const Round = require("./Round.js")
 const Registration = require("./Registration.js")
 const Trick = require("./Trick.js")
 const Hand = require("./Hand.js")
+const BetScore = require("./BetScore.js")
 
 
 
-module.exports = {User, Card, Game, Round, Registration, Trick, Hand};
+module.exports = { User, Card, Game, Round, Registration, Trick, Hand, BetScore };

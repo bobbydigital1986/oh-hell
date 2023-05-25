@@ -6,7 +6,7 @@ class Round extends Model {
     }
 
     static get relationMappings() {
-        const { Card, Trick } = require("./index.js")
+        const { Card, Trick, BetScore, User } = require("./index.js")
 
         return {
             tricks: {
@@ -24,6 +24,28 @@ class Round extends Model {
                 join: {
                     from: "rounds.id",
                     to: "cards.roundId"
+                }
+            },
+
+            betScores: {
+                relation: Model.HasManyRelation,
+                modelClass: BetScore,
+                join: {
+                    from: "rounds.id",
+                    to: "betScores.roundId"
+                }
+            },
+
+            users: {
+                relation: Model.ManyToManyRelation,
+                modelClass: User,
+                join: {
+                    from: "rounds.id",
+                    through: {
+                        from: "cards.roundId",
+                        to: "cards.userId"
+                    },
+                    to: "users.id"
                 }
             }
 
@@ -45,7 +67,8 @@ class Round extends Model {
         let oneRound = [{
             gameId: gameId,
             numberOfTricks: newRoundNumber,
-            dealerId: newDealerId
+            dealerId: newDealerId,
+            phase: "betting"
         }]
         
         const returnOfGraph = await Round.query().insertGraphAndFetch(oneRound)

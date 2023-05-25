@@ -11,7 +11,7 @@ import { createServer } from "http"
 import { Server } from "socket.io"
 import { Game, User, Registration, Trick } from "./models/index.js"
 import createGame from "./services/createGame.js";
-import startGame from "./services/startGame.js"
+import gameStarter from "./services/gameStarter.js"
 import joinGame from "./services/joinGame.js"
 import playCardHandler from "./services/playCardHandler.js";
 import newRoundStarter from "./services/newRoundStarter.js";
@@ -65,12 +65,12 @@ io.on('connection', (socket) => {
     }
   })
 
-  socket.on('game:start', async(gameData) => {
-    const { gameId } = gameData
-    console.log("entered game start", gameData.gameId, gameData.players)
-    const gamePackage = await startGame(gameData.gameId, gameData.players)
+  socket.on('game:start', async(gameInfo, players) => {
+    const gameId = gameInfo.id
+    console.log("entered game start", gameInfo, players)
+    const gameStartPackage = await gameStarter(gameInfo, players)
     // console.log(gamePackage)
-    io.in(gameId).emit("game:start success", gamePackage)
+    io.in(gameId).emit("game:start success", gameStartPackage)
   })
 
   socket.on('game:joined', async({ gameId, user }) => {
@@ -86,6 +86,11 @@ io.on('connection', (socket) => {
     // socket.to(gameId).emit('player:joined', socket.user)
     socket.to(gameId).emit('player:joined', {players: currentPlayers})
 
+  })
+
+  socket.on('game:full', async(gameInfo) => {
+    console.log("game:full received")
+    await Game.query().findById(gameInfo.id).patch({ acceptingRegistrants: false })
   })
 
   socket.on('card:played', async(game, round, trick, card) => {
@@ -169,10 +174,10 @@ io.on('connection', (socket) => {
     
   })
 
-  socket.on("round:next", async(gameInfo) => {
+  socket.on("round:next", async(gameInfo, round) => {
     const gameId = gameInfo.id
     console.log("round next game info", gameInfo)
-    const roundPackage = await newRoundStarter(gameId)
+    const roundPackage = await newRoundStarter(gameId, round)
     console.log("round:next roundPackage", roundPackage)
     io.in(gameId).emit("round:next success", roundPackage)
     

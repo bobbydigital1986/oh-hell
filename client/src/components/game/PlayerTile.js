@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PlayerCard from "./PlayerCard";
 import PlayedCard from "./PlayedCard"
 
-const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards, leadSuit, nextPhase, gameOver }) => {
+const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards, leadSuit, nextPhase, gameOver, betSubmitter, betScores }) => {
 
     let slotName
     let slotStyle
@@ -59,11 +59,15 @@ const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards,
                         playCard={playCard}
                         user={user}
                         canPlay={false}
+                        betScores={betScores}
+                        betSubmitter={betSubmitter}
                     />
                 )
             }
         }))
     }
+
+
 
     let whosTurnIcon = <div className="cell small-3"></div>
     // console.log("PlayerTile trickOver", trickOver)
@@ -91,8 +95,7 @@ const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards,
                 </div>
             )
         }
-    } else if (whosTurn ==
-         player?.id) {
+    } else if (whosTurn == player?.id) {
         whosTurnIcon = (
             <div className="cell small-3">{player?.username}'s turn</div>
         )

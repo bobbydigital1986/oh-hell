@@ -24,7 +24,7 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit }) => {
                 <li>Trump: {trump?.suitUnicode}{trump?.suit}{trump?.suitUnicode}</li>
                 <li>LeadSuit: {leadSuit?.suitUnicode}{leadSuit?.suit}{leadSuit?.suitUnicode}</li>
                 <li>Players: {playerNames.join(", ")}</li>
-                <li>Round: {round?.id}</li>
+                <li>Round: {round?.numberOfTricks}</li>
                 <li>Dealer: {dealerName}</li>
             </ul>
 

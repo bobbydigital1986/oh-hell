@@ -27,12 +27,15 @@ const playCardHandler = async(game, round, trick, card) => {
 
         console.log("playCard playedCard query two secs later", playedCard)
         console.log("game.dealerOrder", game.dealerOrder)
-        console.log("playedCard.userId")
-        const playedCardUsersOrderIndex = game.dealerOrder.indexOf(playedCard.userId)
+        
+        const playedCardUserId = parseInt(playedCard.userId)
+        console.log("playedCardUserId", playedCardUserId)
+        const playedCardUsersOrderIndex = game.dealerOrder.indexOf(playedCardUserId)
         console.log("playedCardUsersOrderIndex", playedCardUsersOrderIndex)
+        
         let whosUpIndex = playedCardUsersOrderIndex + 1
         console.log("whosUpIndex", whosUpIndex)
-        if (!game.dealerOrder[whosUpIndex]) {
+        if (game.dealerOrder[whosUpIndex] == -1) {
             console.log("hit the whosUp if statement, should be set to 0")
             whosUpIndex = 0
         }
