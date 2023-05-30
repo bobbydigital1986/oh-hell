@@ -14,14 +14,14 @@ const newRoundStarter = async (gameId, existingRound) => {
     console.log("newDealerId", newDealerId)
 
     const newRoundNumberOfTricks = existingRound.numberOfTricks + 1
-    let whosFirst = game.dealerOrder[newRoundNumberOfTricks]
-    if (!whosFirst) {
-        whosFirst = game.dealerOrder[0]
+    let whosTurnId = game.dealerOrder[newRoundNumberOfTricks]
+    if (!whosTurnId) {
+        whosTurnId = game.dealerOrder[0]
     }
 
     console.log("newRoundNumber",newRoundNumberOfTricks)
 
-    const newRound =await Round.roundBuilder(game.id, newDealerId, newRoundNumberOfTricks)
+    const newRound = await Round.roundBuilder(game.id, newDealerId, newRoundNumberOfTricks, whosTurnId)
 
     const players = await game.$relatedQuery("players")
 
@@ -35,7 +35,7 @@ const newRoundStarter = async (gameId, existingRound) => {
         round: newRound,
         trick: newTrick,
         deck: newDeck,
-        whosTurn: whosFirst
+        whosTurn: whosTurnId
     }
     
     return roundPackage

@@ -15,7 +15,7 @@ import gameStarter from "./services/gameStarter.js"
 import joinGame from "./services/joinGame.js"
 import playCardHandler from "./services/playCardHandler.js";
 import newRoundStarter from "./services/newRoundStarter.js";
-
+import betHandler from "./services/betHandler.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -88,6 +88,11 @@ io.on('connection', (socket) => {
 
   })
 
+  socket.on('bet:submitted', async(user, game, bet, round) => {
+    const betResponse = await betHandler(bet, round, game, user)
+    io.to(game.id).emit('bet:submitted success', betResponse)
+  })
+
   socket.on('game:full', async(gameInfo) => {
     console.log("game:full received")
     await Game.query().findById(gameInfo.id).patch({ acceptingRegistrants: false })
@@ -95,22 +100,16 @@ io.on('connection', (socket) => {
 
   socket.on('card:played', async(game, round, trick, card) => {
     const gameId = game.id
-    // console.log(
-    //   "received on card:played",
-    //   "game", game,
-    //   "round", round,
-    //   "trick", trick,
-    //   "card", card
-    // )
+  
 
-    const playCardReponse = await playCardHandler(game, round, trick, card)
+    const playCardResponse = await playCardHandler(game, round, trick, card)
         
-    console.log("playCardReponse", playCardReponse)
-    if (playCardReponse.gameOver.whatsOver == "trick") {
-      console.log("playCardReponse.gameOver.whatsOver == trick")
-      io.in(gameId).emit('card:played trickOver', playCardReponse)
-        // playCardReponse = {
-        //     gameOver: {
+    console.log("playCardResponse", playCardResponse)
+    if (playCardResponse.phaseOver.whatsOver == "trick") {
+      console.log("playCardResponse.phaseOver.whatsOver == trick")
+      io.in(gameId).emit('card:played trickOver', playCardResponse)
+        // playCardResponse = {
+        //     phaseOver: {
         //          whatsOver: "trick",
         //          winnerId: userId
         //     }
@@ -118,11 +117,11 @@ io.on('connection', (socket) => {
         //     whosTurn: userId
         //     newTrick: newTrick
         // }
-    } else if (playCardReponse.gameOver.whatsOver == "round") {
-      console.log("playCardReponse.gameOver.whatsOver == round")
-      io.in(gameId).emit('card:played trickAndRoundOver', playCardReponse)
-        // playCardReponse = {
-        //     gameOver: {
+    } else if (playCardResponse.phaseOver.whatsOver == "round") {
+      console.log("playCardResponse.phaseOver.whatsOver == round")
+      io.in(gameId).emit('card:played trickAndRoundOver', playCardResponse)
+        // playCardResponse = {
+        //     phaseOver: {
         //          whatsOver: "round",
         //          winnerId: userId
         //     }
@@ -130,9 +129,9 @@ io.on('connection', (socket) => {
         //     whosTurn???? <--- look into this
         // }
     } else {
-      io.in(gameId).emit('card:played success', playCardReponse)
-        // playCardReponse = {
-        //     gameOver: {
+      io.in(gameId).emit('card:played success', playCardResponse)
+        // playCardResponse = {
+        //     phaseOver: {
         //          whatsOver: "",
         //          winnerId: null
         //     }

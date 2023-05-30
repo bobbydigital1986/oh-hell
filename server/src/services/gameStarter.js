@@ -15,17 +15,18 @@ const gameStarter = async(gameInfo, players) => {
     // findGame.dealerOrder = alternatingPlayersArray
     
     // let newRound
-    // let newRoundNumber
+    // let newRoundNumberOfTricks
     // if (existingRounds.length > 0) {
         // console.log("caught the existing round", existingRounds)
-        // newRoundNumber = existingRounds.length + 1
+        // newRoundNumberOfTricks = existingRounds.length + 1
         //THIS NEEDS TO BE UPDATED - AUTOMATICALLY ASSUMED WERE ON THE FIRST ROUND
         // newRound = existingRounds[0]
     // } else {
         //No existing rounds found
-    let newRoundNumber = 1
+    let newRoundNumberOfTricks = 1
     const newDealerId = newGameInfo.dealerOrder[0]
-    let newRound = await Round.roundBuilder(gameId, newDealerId, newRoundNumber)
+    const whosTurnId = newGameInfo.dealerOrder[1]
+    let newRound = await Round.roundBuilder(gameId, newDealerId, newRoundNumberOfTricks, whosTurnId)
     // }
 
     console.log("newRound", newRound)

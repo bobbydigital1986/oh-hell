@@ -52,28 +52,28 @@ class Round extends Model {
         }
     }
 
-    static async roundBuilder(gameId, newDealerId, newRoundNumber) {
+    static async roundBuilder(gameId, newDealerId, newRoundNumberOfTricks, whosTurnId) {
         const { Game } = require("./index.js")
         // const numberOfRounds = Game.query().findById(gameId).numberOfRounds
         // const megaRoundGraph = []
         console.log("roundBuilding gameIdr", gameId)
         console.log("roundBuilding newDealerId", newDealerId)
-        console.log("roundBuilding Round number", newRoundNumber)
-        let roundNumber = newRoundNumber
-        if (!newRoundNumber) {
-            roundNumber = 1
-        }
+        console.log("roundBuilding Round number", newRoundNumberOfTricks)
+        
 
         let oneRound = [{
             gameId: gameId,
-            numberOfTricks: newRoundNumber,
+            numberOfTricks: newRoundNumberOfTricks,
             dealerId: newDealerId,
-            phase: "betting"
+            phase: "betting",
+            whosTurn: whosTurnId
         }]
         
         const returnOfGraph = await Round.query().insertGraphAndFetch(oneRound)
         console.log("roundBuidler return of graph", returnOfGraph)
-        return returnOfGraph[0]
+        
+        
+        return Round.roundSerializer(returnOfGraph[0])
         // const roundGraph = [
         //     {
         //     "#id": `newRound${i}`,
@@ -92,6 +92,15 @@ class Round extends Model {
         //     return handObject
             
         // })
+    }
+
+    static roundSerializer(round) {
+        const allowedAttributes = ["id", "gameId", "numberOfTricks", "dealerId", "whosTurn", "phase"]
+        let serializedRound = {}
+        for (const attribute of allowedAttributes) {
+            serializedRound[attribute] = round[attribute]
+        }
+        return serializedRound
     }
 }
 

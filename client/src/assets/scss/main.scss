@@ -15,7 +15,7 @@
 
 
 .game-sideboard {
-  height: 800px;
+  height: 90vh;
 }
 
 .gameboard {
@@ -37,6 +37,11 @@ h4 {
   text-align: center;
 }
 
+h4.player-tile-top-slots {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+
+}
+
 .chatbox {
   border: 2px solid black;
   border-radius: 2em;
@@ -56,6 +61,10 @@ h4 {
   padding: 0
 }
 
+.start-button {
+  height: 100%;
+}
+
 .player-tile {
   background-color: rgb(45, 120, 45);
   border: 2px solid black;
@@ -71,25 +80,63 @@ h4 {
   background-color: white;
   border: 2px solid black;
   border-radius: .5em;
-  height: 24%;
-  width: 16%;
+  height: 7rem;
+  max-width: 4.5rem;
+  // width: 4.5rem;
 }
 
 .card-space {
   width: 90%;
 }
 
-.cmon {
-  height: 100%
+.card-label {
+  font-size: 100%;
+  margin: 0 1px 0 0 ;
+}
+
+// .cmon {
+//   height: 100%;
+//   max-width: 4.5rem;
+// }
+
+.your-turn {
+  background-color: yellow;
+  border-radius: .5rem;
+  height: 100%;
+  padding: .25rem 0;
+  margin: 0 10px 0 10px;
+}
+
+.card-box {
+  height: 7rem;
+  // width: 90%;
+  margin-left: -1.5rem;
+}
+
+.card-box.first-card {
+  margin-left: 0;
 }
 
 .played-card {
+  // padding: 4px;
+  height: 7rem;
+  // max-width: 4.5rem;
+  // align-content: center;
+}
+
+.other-players-card {
   padding: 4px;
-  height: 100px;
-  width: 4em;
+  height: 7rem;
+  // width: 4.5rem;
 }
 
 .winner {
   background-color: blue;
   color: white;
+}
+
+.score-table {
+  width: 100%;
+  font-size: .5em;
+
 }

@@ -6,7 +6,7 @@ import { Redirect } from "react-router-dom";
 const GameNew = ({ user, socket }) => {
 
     const [gameId, setGameId] = useState(null)
-    console.log(gameId)
+    // console.log(gameId)
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -14,16 +14,17 @@ const GameNew = ({ user, socket }) => {
         });
 
         socket.on('game:create success', (gameId) => {
-            console.log("socket response", gameId)
+            // console.log("socket response", gameId)
             setGameId(gameId.newGameId)
         })
         
         socket.on('game:create join-existing', (gameId) => {
-            console.log("socket response", gameId)
+            // console.log("socket response", gameId)
             setGameId(gameId.existingGameId)
         })
         
-        socket.emit("game:create", user, 2, 3)
+        socket.emit("game:create", user, 4, 3)
+        //("game:create", user, numberOfPlayers, numberOfRounds)
 
         return () => {
             socket.removeAllListeners("room:create success")

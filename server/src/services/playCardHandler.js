@@ -1,10 +1,11 @@
-import { Game, Round, Trick, Card } from "../models/index.js"
+import { Game, Round, Trick, Card, BetScore } from "../models/index.js"
+import { raw } from 'objection'
 
 
 const playCardHandler = async(game, round, trick, card) => {
     
-    let playCardReponse = {
-        gameOver: {
+    let playCardResponse = {
+        phaseOver: {
             whatsOver: "", // trick, round, game
             winnerId: null
         },
@@ -22,11 +23,8 @@ const playCardHandler = async(game, round, trick, card) => {
         const playedCard = await Card.query().patchAndFetchById(card.id, { trickPlayedId: trick.id, trickLeadSuit: trick.id })
         console.log("playCard playedCard query", playedCard)
 
-        playCardReponse.playedCards = [...cardsPlayedPreviously, playedCard]
-        playCardReponse.leadSuit = playedCard
-
-        console.log("playCard playedCard query two secs later", playedCard)
-        console.log("game.dealerOrder", game.dealerOrder)
+        playCardResponse.playedCards = [...cardsPlayedPreviously, playedCard]
+        playCardResponse.leadSuit = playedCard
         
         const playedCardUserId = parseInt(playedCard.userId)
         console.log("playedCardUserId", playedCardUserId)
@@ -39,9 +37,9 @@ const playCardHandler = async(game, round, trick, card) => {
             console.log("hit the whosUp if statement, should be set to 0")
             whosUpIndex = 0
         }
-        playCardReponse.whosTurn = game.dealerOrder[whosUpIndex]
+        playCardResponse.whosTurn = game.dealerOrder[whosUpIndex]
         
-        return  playCardReponse
+        return  playCardResponse
     } else {
         //Not first card played in trick, evaluate if trick is over or not
         const ledCard = await Card.query()
@@ -49,8 +47,8 @@ const playCardHandler = async(game, round, trick, card) => {
             .findOne({ trickLeadSuit: trick.id })
         const leadSuitId = ledCard.suitId
         console.log("playCard leadSuitId:", leadSuitId)
+        
         let cardPlayedWithTrick
-        console.log("playCardHandler cardPlayedWithTrick", cardPlayedWithTrick)
         //check if card played was lead suit and designate it as such in db
         if (card.suitId == leadSuitId) {
             //card matched lead suit
@@ -59,66 +57,91 @@ const playCardHandler = async(game, round, trick, card) => {
             //card did not match lead suit
             cardPlayedWithTrick = await Card.query().patchAndFetchById(card.id, { trickPlayedId: trick.id })
         }
-        playCardReponse.playedCards = [...cardsPlayedPreviously, cardPlayedWithTrick]
+        playCardResponse.playedCards = [...cardsPlayedPreviously, cardPlayedWithTrick]
         const cardPlayersSpotInRotation = game.dealerOrder.indexOf(cardPlayedWithTrick.userId)
         
         
         if (cardsPlayedPreviously.length + 1 == game.numberOfPlayers) {
             //Trick is over, evaluate winner & evaluate if round is over
             console.log("Trick is over, evaluate winner & evaluate if round is over")
-            playCardReponse.gameOver.whatsOver = "trick"
-
-            const winner = await Trick.determineTrickWinner(trick)
-            console.log("playCard Trick winner", winner)
-            // playCardReponse.winnerId = winner.userId
-            playCardReponse.gameOver.winnerId = winner.userId
+            playCardResponse.phaseOver.whatsOver = "trick"
 
             const tricksPlayedSoFar = await Trick.query().where('roundId', round.id)
-            console.log("tricksPlayedSoFar", )
+
+            const wonTrickObject = await Trick.determineTrickWinner(trick, tricksPlayedSoFar)
+            console.log("playCard Trick winner", wonTrickObject)
+            playCardResponse.phaseOver.winnerId = wonTrickObject.userId
+
+            console.log("tricksPlayedSoFar", tricksPlayedSoFar)
+            console.log("tricksPlayedSoFar round", round)
+
+            const updatedBet = await BetScore.query()
+                .increment("tricksWon", 1)
+                .where({ userId: wonTrickObject.userId, roundId: round.id})
+            console.log("number of bets updated:", updatedBet)
+
+            const roundBets = await BetScore.query().where({ roundId: round.id })
             if (tricksPlayedSoFar.length < round.numberOfTricks) {
                 //Round not over
                 console.log("play card resolved as trick over only")
                 // const newTrick = await Trick.trickBuilder(round)
-                // playCardReponse.newTrick = newTrick 
-                playCardReponse.whosTurn = winner.userId //Winner plays first in next trick
-                return playCardReponse
+                // playCardResponse.newTrick = newTrick 
+                playCardResponse.whosTurn = wonTrickObject.userId //Winner plays first in next trick
+
+                return playCardResponse
             } else {
                 //Round over
                 console.log("Play card round over")
-                // playCardReponse.roundOver = true
-                playCardReponse.gameOver.whatsOver = "round"
-
-                return playCardReponse
-
-
+                // playCardResponse.roundOver = true
+                
+                let betGraph = []
+                const resolvedBets = roundBets.map((betScore) => {
+                    let betObject = {
+                        id: betScore.id,
+                        score: 0
+                    }
+                    //may need to set default of score to null so that State recognizes change in value
+                    if (betScore.bet == betScore.tricksWon) {
+                        const newScore = betScore.bet + 1
+                        betObject.score = newScore
+                        betGraph.push(betObject)
+                        betScore.score = newScore
+                        return betScore
+                    }
+                    return betScore
+                })
+                if (betGraph.length > 0) {
+                    const upsertResponse = await BetScore.query().upsertGraph(betGraph)
+                    console.log("betScore upsert response", upsertResponse)
+                }
+                playCardResponse.betScores = resolvedBets
+                
+                const roundPhaseEnded = await Round.query().patchAndFetchById(round.id, { phase: "ended" })
+                playCardResponse.phaseOver.whatsOver = "round"
+                
+                console.log("roundPhaseEnded", roundPhaseEnded)
+                if (roundPhaseEnded.numberOfTricks >= game.numberOfRounds) {
+                    //Game over
+                    console.log('CAUGHT THE GAMEOVER IF')
+                    playCardResponse.whatsOver = "game"
+                    return playCardResponse
+                }
+    
+                return playCardResponse
             }
         } else {
-            //Trick is not over
+            //Not first card played but Trick is not over
             console.log("Trick not over")
             const playedCardUsersOrderIndex = game.dealerOrder.indexOfplayedCard.userId
             let whosUpIndex = playedCardUsersOrderIndex + 1
             if (!game.dealerOrder[whosUpIndex]) {
                 whosUpIndex = 0
             }
-            playCardReponse.whosTurn = game.dealerOrder[whosUpIndex]
+            playCardResponse.whosTurn = game.dealerOrder[whosUpIndex]
             
-            return playCardReponse
+            return playCardResponse
         }
     }
-        // playCardReponse = {
-        //     gameOver: {
-        //         whatsOver: trick or round or game,
-        //         winnerId: 1
-        //     }, 
-        //     winnerId: userId,
-        //     playedCards: [playedCards],
-        //     whosTurn: userId,
-        //     leadSuit: leadSuit
-        // }
-
-
-
-
 }
 
 export default playCardHandler

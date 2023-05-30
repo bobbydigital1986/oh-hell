@@ -13,12 +13,19 @@ const GameShow = ({ user, socket, ...rest}) => {
     const [gameInfo, setGameInfo] = useState({})
     const [gameStarted, setGameStarted] = useState(false)
     const [leadSuit, setLeadSuit] = useState({})
-    const [round, setRound] = useState({})
+    const [round, setRound] = useState({
+        id: null,
+        gameId: null,
+        dealerId: null,
+        numberOfTricks: null,
+        phase: "",
+        whosTurn: null
+    })
     const [messages, setMessages] = useState([])
     const [dealerId, setDealerId] = useState(null)
     const [trick, setTrick] = useState({})
-    const [betScores, setBetScores] = ([])
-    const [gameOver, setGameOver] = useState({
+    const [betScores, setBetScores] = useState([])
+    const [phaseOver, setPhaseOver] = useState({
         whatsOver: "", //trick, round, game
         winnerId: null // id of winning user
     })
@@ -27,14 +34,14 @@ const GameShow = ({ user, socket, ...rest}) => {
     // console.log("Game User", user)
 
     const handleStart = () => {
-        console.log("handleStart started")
+        // console.log("handleStart started")
         socket.emit("game:start", gameInfo, players)
         // setGameStarted(true)
     }
 
     // console.log("players", players)
     console.log("GameShow gameInfo", gameInfo)
-    console.log("GameShow gameOver", gameOver)
+    console.log("GameShow phaseOver", phaseOver)
     // console.log("GameShow roundOver", roundOver)
     // console.log("GameShow trickOver", trickOver)
     console.log("GameShow whosTurn", whosTurn)
@@ -75,23 +82,23 @@ const GameShow = ({ user, socket, ...rest}) => {
             setDealerId(gamePackage.round.dealerId)
         })
         
-        socket.on('card:played trickAndRoundOver', (playCardReponse) => {
+        socket.on('card:played trickAndRoundOver', (playCardResponse) => {
             console.log('card:played trickAndRoundOver')
-            setPlayedCards(playCardReponse.playedCards)
+            setPlayedCards(playCardResponse.playedCards)
             // setTrickOver({
-            //     isOver: playCardReponse.trickOver,
-            //     winnerId: playCardReponse.winnerId
+            //     isOver: playCardResponse.trickOver,
+            //     winnerId: playCardResponse.winnerId
             // })
-            setGameOver({
+            setPhaseOver({
                 whatsOver: "round",
-                winnerId: playCardReponse.gameOver.winnerId
+                winnerId: playCardResponse.phaseOver.winnerId
             })
             // setRoundOver(true)
             // setDealerId(null)
             setWhosTurn(null)
             // setLeadSuit({})
-        // playCardReponse = {
-        //     gameOver: {
+        // playCardResponse = {
+        //     phaseOver: {
         //        whatsOver: round,
         //        winnerId: 1
         //     }
@@ -102,20 +109,20 @@ const GameShow = ({ user, socket, ...rest}) => {
 
         })
 
-        socket.on('card:played trickOver', (playCardReponse) => {
+        socket.on('card:played trickOver', (playCardResponse) => {
             console.log('card:played trickOver')
-            setPlayedCards(playCardReponse.playedCards)
+            setPlayedCards(playCardResponse.playedCards)
             // setTrickOver({
             //     isOver: true,
-            //     winnerId: playCardReponse.winnerId
+            //     winnerId: playCardResponse.winnerId
             // })
-            setGameOver({
+            setPhaseOver({
                 whatsOver: "trick",
-                winnerId: playCardReponse.gameOver.winnerId
+                winnerId: playCardResponse.phaseOver.winnerId
             })
             setWhosTurn(null)
             // setLeadSuit({})
-        // playCardReponse = {
+        // playCardResponse = {
         //     trickOver: true,
         //     roundOver: false,
         //     winnerId: userId,
@@ -125,12 +132,12 @@ const GameShow = ({ user, socket, ...rest}) => {
         // }
         })
 
-        socket.on('card:played success', (playCardReponse) => {
-            console.log('card:played success', playCardReponse)
-            setPlayedCards(playCardReponse.playedCards)
-            setWhosTurn(playCardReponse.whosTurn)
-            setLeadSuit(playCardReponse.leadSuit)
-        // playCardReponse = {
+        socket.on('card:played success', (playCardResponse) => {
+            // console.log('card:played success', playCardResponse)
+            setPlayedCards(playCardResponse.playedCards)
+            setWhosTurn(playCardResponse.whosTurn)
+            setLeadSuit(playCardResponse.leadSuit)
+        // playCardResponse = {
         //     trickOver: false,
         //     roundOver: false,
         //     playedCards: [playedCards]
@@ -148,12 +155,19 @@ const GameShow = ({ user, socket, ...rest}) => {
             //     isOver: false,
             //     winnerId: null
             // })
-            setGameOver({
+            setPhaseOver({
                 whatsOver: "",
                 winnerId: null
             })
             setLeadSuit({})
             setWhosTurn(newTrickPackage.lastTrickWinnerId)
+        })
+
+        socket.on("bet:submitted success", (betResponse) => {
+            console.log("bet:submitted success", betResponse)
+            setBetScores(betResponse.bets)
+            setRound(betResponse.round)
+            setWhosTurn(betResponse.round.whosTurn)
         })
 
         socket.on("round:next success", (roundPackage) => {
@@ -163,7 +177,7 @@ const GameShow = ({ user, socket, ...rest}) => {
             //     isOver: false,
             //     winnerId: null
             // })
-            setGameOver({
+            setPhaseOver({
                 whatsOver: "",
                 winnerId: null
             })
@@ -178,6 +192,8 @@ const GameShow = ({ user, socket, ...rest}) => {
             setDealerId(roundPackage.round.dealerId)
         })
 
+
+
     },[])
 
     useEffect(() => {
@@ -186,18 +202,19 @@ const GameShow = ({ user, socket, ...rest}) => {
 
     // console.log("dealtCards:", dealtCards)
 
-    const betSubmitter = () => {
-
+    const betSubmitter = (bet) => {
+        console.log("betSubmitter bet", bet)
+        socket.emit("bet:submitted", user, gameInfo, bet, round)
     }
 
     if (players?.length >= gameInfo?.numberOfPlayers && gameInfo.acceptingRegistrants && !gameStarted) {
         socket.emit("game: full", gameInfo)
     }
 
-    const nextPhase = () => {
-        // console.log("nextPhase roundOver", roundOver)
-        console.log("nextPhase gameOver", gameOver)
-        if (gameOver.whatsOver == "round") {
+    const nextGamePhase = () => {
+        // console.log("nextGamePhase roundOver", roundOver)
+        console.log("nextGamePhase phaseOver", phaseOver)
+        if (phaseOver.whatsOver == "round") {
             console.log("gameShow caught the roundOver if")
             socket.emit("round:next", gameInfo, round)
         } else {
@@ -233,21 +250,32 @@ const GameShow = ({ user, socket, ...rest}) => {
             } else {
                 tileDealtCards = []
             }
+            
+            let playerBetScore
+            console.log("GameShow before decision betScores", betScores)
+            // if (betScores?.length > 0 && betScores[0]?.userId) {
+            if (betScores[0]) {
+                playerBetScore = betScores.find(bet => bet?.userId == players[i].id)
+            }
 
             let tile = (
                 <PlayerTile
                     key={i}
                     user={user}
+                    gameInfo={gameInfo}
                     player={players[i]}
-                    dealtCards={tileDealtCards}
+                    tileDealtCards={tileDealtCards}
                     playCard={playCard}
-                    whosTurn={whosTurn}
                     playedCards={playedCards}
+                    round={round}
+                    whosTurn={whosTurn}
                     leadSuit={leadSuit}
-                    gameOver={gameOver}
-                    nextPhase={nextPhase}
+                    phaseOver={phaseOver}
+                    playerBetScore={playerBetScore}
+                    nextGamePhase={nextGamePhase}
                     betSubmitter={betSubmitter}
-                    betScores={betScores}
+                    gameStarted={gameStarted}
+                    handleStart={handleStart}
                 />
             )
             if (players[i]?.id == user.id) {
@@ -257,18 +285,13 @@ const GameShow = ({ user, socket, ...rest}) => {
             }
         }
     }
-    let startButtton
-    if (!gameStarted && gameInfo.ownerId == user.id) {
-        startButtton = (<button type="button" className="button" onClick={handleStart}>Start Game</button>)
-    }
+    
     // console.log(gameStarted)
     
 
     return (
         <div className="grid-x">
             <div className="cell small-9 gameboard">
-                <div>{startButtton}</div>
-                
                 <div className="grid-x grid-margin-x grid-container player-tiles">
                     {playerTiles}
                 </div>

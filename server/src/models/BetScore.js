@@ -5,8 +5,8 @@ class BetScore extends Model {
         return "betScores"
     }
 
-    static get RelationMapping() {
-        const { User, Round, Registration } = require("./index.js")
+    static get relationMappings() {
+        const { Round, Registration } = require("./index.js")
 
         return {
             round: {
@@ -18,7 +18,7 @@ class BetScore extends Model {
                 }
             },
 
-            registrations: {
+            registration: {
                 relation: Model.BelongsToOneRelation,
                 modelClass: Registration,
                 join: {
@@ -28,6 +28,17 @@ class BetScore extends Model {
             }
         }
     }
+
+    async resolveRoundBets() {
+        if(this.bet == this.tricksWon) {
+            let score = this.bet + 1
+            this.$query().patch({ score: score })
+            return this
+        } else {
+            this.score = 0
+            return this
+        }
+    }
 }
 
-module.export = BetScore
+module.exports = BetScore

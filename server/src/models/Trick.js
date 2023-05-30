@@ -6,7 +6,7 @@ class Trick extends Model {
     }
 
     static get relationMappings() {
-        const { Card, User, Round } = require("./index.js")
+        const { Card, User, Round, BetScore } = require("./index.js")
 
         return {
             cardsPlayed: {
@@ -52,14 +52,14 @@ class Trick extends Model {
         return newTrick
     }
 
-    static async determineTrickWinner(trick) {
+    static async determineTrickWinner(trick, tricksPlayedSoFar) {
         const { Card } = require("./index.js")
 
-        const trickPlayed = await Trick.query().findById(trick.id)
+        const trickPlayed = tricksPlayedSoFar.find(tricker => tricker.id == trick.id)
         console.log("determineTrickWinner trickPlayed query", trickPlayed)
-        const freshCardsPlayedQuery = await trickPlayed.$relatedQuery("cardsPlayed")
-        console.log("Trick => determineTrickWinner freshCardsPlayedQuery", freshCardsPlayedQuery)
-        const playersAndComputedScore = freshCardsPlayedQuery.map(card => {
+        const trickPlayedCards = await trickPlayed.$relatedQuery("cardsPlayed")
+        console.log("Trick => determineTrickWinner trickPlayedCards", trickPlayedCards)
+        const playersAndComputedScore = trickPlayedCards.map(card => {
             let cardObject = {
                 userId: card.userId,
                 trickPlayedId: card.trickPlayedId,
@@ -79,17 +79,19 @@ class Trick extends Model {
                 return cardObject
             }
         })
-        const compareComputedValue = (a, b) => {
-            return a.computedValue - b.computedValue
-        }
         console.log("determineTrickwinner playersAndComputedScore", playersAndComputedScore)
-        const sortedScores = playersAndComputedScore.sort(compareComputedValue).reverse()
-        console.log("determineTrickwinner sortedScores", sortedScores)
-        const winner = sortedScores[0]
-        console.log("determineTrickwinner winner", winner)
-        const setWinnerOfTrick = await trickPlayed.$relatedQuery("winner").relate(winner.userId)
+
+        const highestScore = playersAndComputedScore.reduce((highScore, compareScore) => 
+            highScore.computedValue < compareScore.compareComputedValue ? compareScore : highScore
+        )
+        console.log("determineTrickwinner highestScore", highestScore)
+
+
+        const setWinnerOfTrick = await trickPlayed.$relatedQuery("winner").relate(highestScore.userId)
         console.log("determineTrickwinner setWinnerOfTrick", setWinnerOfTrick)
-        return winner
+
+
+        return highestScore
     }
 }
 
