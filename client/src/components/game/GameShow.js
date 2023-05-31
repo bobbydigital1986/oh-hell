@@ -85,6 +85,7 @@ const GameShow = ({ user, socket, ...rest}) => {
         socket.on('card:played trickAndRoundOver', (playCardResponse) => {
             console.log('card:played trickAndRoundOver')
             setPlayedCards(playCardResponse.playedCards)
+            setBetScores(playCardResponse.betScores)
             // setTrickOver({
             //     isOver: playCardResponse.trickOver,
             //     winnerId: playCardResponse.winnerId
@@ -112,6 +113,7 @@ const GameShow = ({ user, socket, ...rest}) => {
         socket.on('card:played trickOver', (playCardResponse) => {
             console.log('card:played trickOver')
             setPlayedCards(playCardResponse.playedCards)
+            setBetScores(playCardResponse.betScores)
             // setTrickOver({
             //     isOver: true,
             //     winnerId: playCardResponse.winnerId
@@ -190,6 +192,7 @@ const GameShow = ({ user, socket, ...rest}) => {
             setDealtCards(roundPackage.deck)
             setWhosTurn(roundPackage.whosTurn)
             setDealerId(roundPackage.round.dealerId)
+            setBetScores()
         })
 
 

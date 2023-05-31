@@ -87,6 +87,7 @@ const playCardHandler = async(game, round, trick, card) => {
                 // const newTrick = await Trick.trickBuilder(round)
                 // playCardResponse.newTrick = newTrick 
                 playCardResponse.whosTurn = wonTrickObject.userId //Winner plays first in next trick
+                playCardResponse.betScores = roundBets
 
                 return playCardResponse
             } else {
