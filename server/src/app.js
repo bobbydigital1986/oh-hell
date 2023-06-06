@@ -15,7 +15,7 @@ import gameStarter from "./services/gameStarter.js"
 import joinGame from "./services/joinGame.js"
 import playCardHandler from "./services/playCardHandler.js";
 import newRoundStarter from "./services/newRoundStarter.js";
-import betHandler from "./services/betHandler.js";
+import betHandler from "./services/betHandler.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -134,6 +134,9 @@ io.on('connection', (socket) => {
         //     playedCards: [playedCards],
         //     whosTurn???? <--- look into this
         // }
+    } else if (playCardResponse.phaseOver.whatsOver == "game") {
+      console.log("playCardResponse.phaseOver.whatsOver == game")
+      io.in(gameId).emit('card:played gameOver', playCardResponse)
     } else {
       io.in(gameId).emit('card:played success', playCardResponse)
         // playCardResponse = {

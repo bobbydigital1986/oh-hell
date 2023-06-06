@@ -110,6 +110,12 @@ const GameShow = ({ user, socket, ...rest}) => {
 
         })
 
+        socket.on('card:played gameOver', (playCardResponse) => {
+            setPhaseOver({
+                whatsOver: "game"
+            })
+        })
+
         socket.on('card:played trickOver', (playCardResponse) => {
             console.log('card:played trickOver')
             setPlayedCards(playCardResponse.playedCards)
@@ -205,6 +211,8 @@ const GameShow = ({ user, socket, ...rest}) => {
 
     // console.log("dealtCards:", dealtCards)
 
+
+
     const betSubmitter = (bet) => {
         console.log("betSubmitter bet", bet)
         socket.emit("bet:submitted", user, gameInfo, bet, round)
@@ -212,6 +220,10 @@ const GameShow = ({ user, socket, ...rest}) => {
 
     if (players?.length >= gameInfo?.numberOfPlayers && gameInfo.acceptingRegistrants && !gameStarted) {
         socket.emit("game: full", gameInfo)
+    }
+
+    if (phaseOver.whatsOver == "game") {
+        alert("Game Over!")
     }
 
     const nextGamePhase = () => {
