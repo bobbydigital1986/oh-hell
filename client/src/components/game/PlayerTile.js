@@ -1,47 +1,72 @@
 import React, { useState, useEffect } from "react";
 import PlayerCard from "./PlayerCard";
 import PlayedCard from "./PlayedCard"
+import PlayerStatusSlot from "./PlayerStatusSlot";
 
-const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards, leadSuit, trickOver, nextPhase, roundOver }) => {
+const PlayerTile = ({
+    user,
+    player,
+    gameInfo,
+    tileDealtCards,
+    playCard,
+    playedCards,
+    round,
+    whosTurn,
+    leadSuit,
+    nextGamePhase,
+    phaseOver,
+    betSubmitter,
+    betScores,
+    gameStarted,
+    handleStart,
+    playerBetScore
+}) => {
+
 
     let slotName
     let slotStyle
     if (player) {
-        slotName = `${player.username}'s`
+        slotName = `${player.username}`
     } else {
         slotName = 'Open '
         slotStyle = "open-slot"
     }
-    // console.log("in player tile dealt cards", dealtCards)
+    // console.log("in player tile dealt cards", tileDealtCards)
     // console.log("in player tile played cards", playedCards)
     
     let cardsArray
     let playedCardSlot = (
         "Played Card Slot"
     )
-    if (dealtCards) {
+    if (tileDealtCards) {
         let noLeadSuitInHand
-        if (!leadSuit) {
+        if (Object.keys(leadSuit).length < 1) {
+            // console.log("NO LEAD SUIT PLAYED YET")
             noLeadSuitInHand = true
-        } else if (dealtCards.find(cardSuit => cardSuit.suitId == leadSuit)) {
-                noLeadSuitInHand = false
+        } else if (tileDealtCards.find(cardSuit => cardSuit.suitId == leadSuit.suitId)) {
+            // console.log(player.username, "HAS A LEAD SUIT CARD IN HAND")    
+            noLeadSuitInHand = false
         } else {
+            // console.log(player.username, "DOESNT HAVE ANY LEAD")  
             noLeadSuitInHand = true
         }
         
-        
-        cardsArray = dealtCards.map((card => {
+        let cardCount = 0
+        let firstCard
+        cardsArray = tileDealtCards.map((card => {
             // console.log("playerTile canPlay logic card", card)
             // console.log("playerTile canPlay logic whosTurn", whosTurn)
             // console.log("playerTile canPlay logic leadSuit", leadSuit)
             let canPlay = false
             if (whosTurn != player.id) {
                 canPlay = false
-            } else if (noLeadSuitInHand === true || card.suitId === leadSuit.id) {
+            } else if (noLeadSuitInHand === true || card.suitId === leadSuit.suitId) {
                 canPlay = true
             } 
             if (!playedCards.find(playedCard => card.id === playedCard.id)) {
-                console.log("playerTile canPlay designation on card", canPlay)
+                // console.log("playerTile canPlay designation on card", canPlay)
+                cardCount === 0 ? firstCard = true : firstCard = false
+                cardCount++
                 return (
                     <PlayerCard
                         key={card.id}
@@ -49,6 +74,7 @@ const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards,
                         playCard={playCard}
                         user={user}
                         canPlay={canPlay}
+                        firstCard={firstCard}
                     />
                 )
             } else {
@@ -59,56 +85,41 @@ const PlayerTile = ({ player, user, dealtCards, playCard, whosTurn, playedCards,
                         playCard={playCard}
                         user={user}
                         canPlay={false}
+                        betScores={betScores}
+                        betSubmitter={betSubmitter}
                     />
                 )
             }
         }))
     }
 
-    let whosTurnIcon = <div className="cell small-3"></div>
-    console.log("PlayerTile trickOver", trickOver)
-    console.log("PlayerTile roundOver", roundOver)
-    if (trickOver.winnerId == player?.id && player) {
-        // console.log("winner found")
-
-        if (roundOver) {
-            //Trick and Round over
-            console.log("Game Tile caught the roundOver if")
-            whosTurnIcon = (
-                <div className="cell small-3 winner" onClick={nextPhase}>
-                    <h5>{player?.username} Won!</h5>
-                    <p>Click for next round</p>
-                </div>
-            )
-
-        } else {
-            //Trick over
-            whosTurnIcon = (
-                <div className="cell small-3 winner" onClick={nextPhase}>
-                    <h5>{player?.username} Won!</h5>
-                    <p>Click for next trick</p>
-                </div>
-            )
-        }
-    } else if (whosTurn ==
-         player?.id) {
-        whosTurnIcon = (
-            <div className="cell small-3">{player?.username}'s turn</div>
-        )
-        // console.log("designated next turn")
-    }
-
     return (
         <>
             <div className={`cell small-6 player-tile ${slotStyle}`}>
-                <div className="grid-x">
-                    <h1 className="cell small-6"> {slotName} Slot </h1>
-                    {whosTurnIcon}
-                    <div className="cell small-3 played-card"> 
+                <div className="grid-x player-tile-top-slots">
+                    <h1 className="cell small-4"> {slotName} </h1>
+                    <div className="cell small-4">
+                        <PlayerStatusSlot
+                            user={user}
+                            phaseOver={phaseOver}
+                            player={player}
+                            whosTurn={whosTurn}
+                            round={round}
+                            nextGamePhase={nextGamePhase}
+                            gameInfo={gameInfo}
+                            gameStarted={gameStarted}
+                            handleStart={handleStart}
+                            betSubmitter={betSubmitter}
+                            playerBetScore={playerBetScore}
+                        />
+                    </div>
+                    <div className="cell small-4 played-card"> 
                         {playedCardSlot}
                     </div>
                 </div>
+                <div className="grid-x">
                     {cardsArray}
+                </div>
             </div>
         </>
     )

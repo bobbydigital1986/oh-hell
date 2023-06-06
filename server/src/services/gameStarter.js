@@ -1,30 +1,33 @@
 import { Card, Game, Round, Trick } from "../models/index.js"
 
 
-const startGame = async(gameId, players) => {
-    console.log("startGame gameId", gameId)
+const gameStarter = async(gameInfo, players) => {
+    const gameId = gameInfo.id
+    console.log("startGame gameInfo", gameInfo)
     console.log("startGame players", players)
     
-    const findGame = await Game.query().findById(gameId)
-    console.log("startGame => findGame", findGame)
+    // const findGame = await Game.query().findById(gameId)
+    // console.log("startGame => findGame", gameInfo)
 
-    const alternatingPlayersArray = await Game.setDealerOrder(findGame, players)
-    console.log("setDealers", alternatingPlayersArray)
-    const existingRounds = await Round.query().where("gameId", findGame.id)
-    findGame.dealerOrder = alternatingPlayersArray
+    const newGameInfo = await Game.setDealerOrder(gameInfo, players)
+    console.log("startGame newGameInfo", newGameInfo)
+    // const existingRounds = await Round.query().where("gameId", findGame.id)
+    // findGame.dealerOrder = alternatingPlayersArray
     
-    let newRound
-    let newRoundNumber
-    if (existingRounds.length > 0) {
-        console.log("caught the existing round", existingRounds)
-        newRoundNumber = existingRounds.length + 1
+    // let newRound
+    // let newRoundNumberOfTricks
+    // if (existingRounds.length > 0) {
+        // console.log("caught the existing round", existingRounds)
+        // newRoundNumberOfTricks = existingRounds.length + 1
         //THIS NEEDS TO BE UPDATED - AUTOMATICALLY ASSUMED WERE ON THE FIRST ROUND
-        newRound = existingRounds[0]
-    } else {
-        newRoundNumber = 1
-        const newDealerId = alternatingPlayersArray[newRoundNumber - 1]
-        newRound = await Round.roundBuilder(gameId, newDealerId, newRoundNumber)
-    }
+        // newRound = existingRounds[0]
+    // } else {
+        //No existing rounds found
+    let newRoundNumberOfTricks = 1
+    const newDealerId = newGameInfo.dealerOrder[0]
+    const whosTurnId = newGameInfo.dealerOrder[1]
+    let newRound = await Round.roundBuilder(gameId, newDealerId, newRoundNumberOfTricks, whosTurnId)
+    // }
 
     console.log("newRound", newRound)
 
@@ -32,9 +35,9 @@ const startGame = async(gameId, players) => {
     console.log("newDeck", newDeck)
 
     let newTrick = await Trick.trickBuilder(newRound)
-    await findGame.$query().patch({ acceptingRegistrants: false })
+    // await findGame.$query().patch({ acceptingRegistrants: false })
     const gamePackage = {
-        gameInfo: findGame,
+        gameInfo: newGameInfo,
         round: newRound,
         trick: newTrick,
         deck: newDeck
@@ -95,4 +98,4 @@ const startGame = async(gameId, players) => {
 }
 
 
-export default startGame
+export default gameStarter

@@ -6,7 +6,7 @@ class Round extends Model {
     }
 
     static get relationMappings() {
-        const { Card, Trick } = require("./index.js")
+        const { Card, Trick, BetScore, User } = require("./index.js")
 
         return {
             tricks: {
@@ -25,32 +25,55 @@ class Round extends Model {
                     from: "rounds.id",
                     to: "cards.roundId"
                 }
+            },
+
+            betScores: {
+                relation: Model.HasManyRelation,
+                modelClass: BetScore,
+                join: {
+                    from: "rounds.id",
+                    to: "betScores.roundId"
+                }
+            },
+
+            users: {
+                relation: Model.ManyToManyRelation,
+                modelClass: User,
+                join: {
+                    from: "rounds.id",
+                    through: {
+                        from: "cards.roundId",
+                        to: "cards.userId"
+                    },
+                    to: "users.id"
+                }
             }
 
         }
     }
 
-    static async roundBuilder(gameId, newDealerId, newRoundNumber) {
+    static async roundBuilder(gameId, newDealerId, newRoundNumberOfTricks, whosTurnId) {
         const { Game } = require("./index.js")
         // const numberOfRounds = Game.query().findById(gameId).numberOfRounds
         // const megaRoundGraph = []
         console.log("roundBuilding gameIdr", gameId)
         console.log("roundBuilding newDealerId", newDealerId)
-        console.log("roundBuilding Round number", newRoundNumber)
-        let roundNumber = newRoundNumber
-        if (!newRoundNumber) {
-            roundNumber = 1
-        }
+        console.log("roundBuilding Round number", newRoundNumberOfTricks)
+        
 
         let oneRound = [{
             gameId: gameId,
-            numberOfTricks: newRoundNumber,
-            dealerId: newDealerId
+            numberOfTricks: newRoundNumberOfTricks,
+            dealerId: newDealerId,
+            phase: "betting",
+            whosTurn: whosTurnId
         }]
         
         const returnOfGraph = await Round.query().insertGraphAndFetch(oneRound)
         console.log("roundBuidler return of graph", returnOfGraph)
-        return returnOfGraph[0]
+        
+        
+        return Round.roundSerializer(returnOfGraph[0])
         // const roundGraph = [
         //     {
         //     "#id": `newRound${i}`,
@@ -69,6 +92,15 @@ class Round extends Model {
         //     return handObject
             
         // })
+    }
+
+    static roundSerializer(round) {
+        const allowedAttributes = ["id", "gameId", "numberOfTricks", "dealerId", "whosTurn", "phase"]
+        let serializedRound = {}
+        for (const attribute of allowedAttributes) {
+            serializedRound[attribute] = round[attribute]
+        }
+        return serializedRound
     }
 }
 

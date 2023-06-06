@@ -5,7 +5,7 @@ class Hand extends Model {
         return "hands"
     }
 
-    static get RelationMapping() {
+    static get relationMappings() {
         const { User, Round, Card } = require("./index.js")
 
         return {
