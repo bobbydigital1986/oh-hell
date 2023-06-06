@@ -21,6 +21,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 import hbsMiddleware from "express-handlebars";
+import RegistrantSerializer from "./serializers/RegistrantSerializer.js";
 
 app.set("views", path.join(__dirname, "../views"));
 app.engine(
@@ -80,11 +81,16 @@ io.on('connection', (socket) => {
     console.log("socket.user", socket.user)
     const game = await Game.query().findById(gameId)
     const joinedAction = await joinGame(game, user.id)
-    const currentPlayers = await game.$relatedQuery("players")
+    const currentPlayers = await Registration.query()
+      .where({ gameId: gameId })
+      .join('users', 'registrations.userId', 'users.id')
+      .select('registrations.userId as id', 'users.username', 'registrations.gameScore')
+    console.log("game:joined currentplayers", currentPlayers)
+    // const currentPlayers = registrants.map(registrant => RegistrantSerializer(registrant)) 
     socket.join(gameId)
     io.to(socket.id).emit('game:joined success', { game, players: currentPlayers })
     // socket.to(gameId).emit('player:joined', socket.user)
-    socket.to(gameId).emit('player:joined', {players: currentPlayers})
+    socket.to(gameId).emit('player:joined', { players: currentPlayers })
 
   })
 

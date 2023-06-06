@@ -82,7 +82,7 @@ class Trick extends Model {
         console.log("determineTrickwinner playersAndComputedScore", playersAndComputedScore)
 
         const highestScore = playersAndComputedScore.reduce((highScore, compareScore) => 
-            highScore.computedValue < compareScore.compareComputedValue ? compareScore : highScore
+            highScore.computedValue < compareScore.computedValue ? compareScore : highScore
         )
         console.log("determineTrickwinner highestScore", highestScore)
 

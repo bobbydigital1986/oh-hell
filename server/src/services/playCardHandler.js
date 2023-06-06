@@ -98,15 +98,18 @@ const playCardHandler = async(game, round, trick, card) => {
                 let betGraph = []
                 const resolvedBets = roundBets.map((betScore) => {
                     let betObject = {
-                        id: betScore.id,
-                        score: 0
+                        id: betScore.id
                     }
                     //may need to set default of score to null so that State recognizes change in value
                     if (betScore.bet == betScore.tricksWon) {
-                        const newScore = betScore.bet + 1
+                        const trickPointsAwarded = betScore.bet + 1
+                        const newScore = trickPointsAwarded + betScore.score
                         betObject.score = newScore
+                        betObject.registration = {
+                            id: betScore.registrantId,
+                            gameScore: newScore
+                        }
                         betGraph.push(betObject)
-                        betScore.score = newScore
                         return betScore
                     }
                     return betScore

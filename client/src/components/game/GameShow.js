@@ -257,7 +257,7 @@ const GameShow = ({ user, socket, ...rest}) => {
             let playerBetScore
             console.log("GameShow before decision betScores", betScores)
             // if (betScores?.length > 0 && betScores[0]?.userId) {
-            if (betScores[0]) {
+            if (betScores) {
                 playerBetScore = betScores.find(bet => bet?.userId == players[i].id)
             }
 
