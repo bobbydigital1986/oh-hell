@@ -19,8 +19,14 @@ const betHandler = async(bet, round, game, user) => {
     
     let updatedRound
     const userIdInteger = parseInt(user.id)
+    console.log("userIdInteger", userIdInteger)
+
     let bettingUsersDealerIndex = game.dealerOrder.indexOf(userIdInteger)
+    console.log("bettingUsersDealerIndex", bettingUsersDealerIndex)
     let whosTurnToBet = game.dealerOrder[bettingUsersDealerIndex + 1]
+    if (!whosTurnToBet) {
+        whosTurnToBet = game.dealerOrder[0]
+    }
     // console.log("whosTurnToBetMaybeString", whosTurnToBetMaybeString)
     // let whosTurnToBet = parseInt(whosTurnToBetMaybeString)
     console.log("whosTurnToBet", whosTurnToBet)

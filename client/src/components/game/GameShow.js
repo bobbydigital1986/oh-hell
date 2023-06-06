@@ -223,13 +223,16 @@ const GameShow = ({ user, socket, ...rest}) => {
     }
 
     if (phaseOver.whatsOver == "game") {
-        alert("Game Over!")
+        console.log("GAME OVER CAUGHT")
+        // alert("Game Over!")
     }
 
     const nextGamePhase = () => {
         // console.log("nextGamePhase roundOver", roundOver)
         console.log("nextGamePhase phaseOver", phaseOver)
-        if (phaseOver.whatsOver == "round") {
+        if (phaseOver.whatsOver == "game") {
+            console.log("gameShow caught the gameOver if")
+        } else if (phaseOver.whatsOver == "round") {
             console.log("gameShow caught the roundOver if")
             socket.emit("round:next", gameInfo, round)
         } else {
@@ -255,7 +258,14 @@ const GameShow = ({ user, socket, ...rest}) => {
     }
 
     let playerTiles = []
-    if (gameInfo) {
+    if (phaseOver.whatsOver == "game") {
+        let gameOverDisplay = (
+            <>
+                <h1>Someone won!</h1>
+            </>
+        )
+        playerTiles.push(gameOverDisplay)
+    } else if (gameInfo) {
         console.log("entered playerTileBuilder")
         for (let i = 0; i < gameInfo.numberOfPlayers; i++) {
             let tileDealtCards = []

@@ -33,7 +33,7 @@ const playCardHandler = async(game, round, trick, card) => {
         
         let whosUpIndex = playedCardUsersOrderIndex + 1
         console.log("whosUpIndex", whosUpIndex)
-        if (game.dealerOrder[whosUpIndex] == -1) {
+        if (game.dealerOrder.length <= whosUpIndex) {
             console.log("hit the whosUp if statement, should be set to 0")
             whosUpIndex = 0
         }
@@ -118,6 +118,7 @@ const playCardHandler = async(game, round, trick, card) => {
                     const upsertResponse = await BetScore.query().upsertGraph(betGraph)
                     console.log("betScore upsert response", upsertResponse)
                 }
+                console.log("playCardHandler resolvedBets", resolvedBets)
                 playCardResponse.betScores = resolvedBets
                 
                 const roundPhaseEnded = await Round.query().patchAndFetchById(round.id, { phase: "ended" })
@@ -127,7 +128,7 @@ const playCardHandler = async(game, round, trick, card) => {
                 if (roundPhaseEnded.numberOfTricks >= game.numberOfRounds) {
                     //Game over
                     console.log('CAUGHT THE GAMEOVER IF')
-                    playCardResponse.whatsOver = "game"
+                    playCardResponse.phaseOver.whatsOver = "game"
                     return playCardResponse
                 }
     
@@ -136,7 +137,7 @@ const playCardHandler = async(game, round, trick, card) => {
         } else {
             //Not first card played but Trick is not over
             console.log("Trick not over")
-            const playedCardUsersOrderIndex = game.dealerOrder.indexOfplayedCard.userId
+            const playedCardUsersOrderIndex = game.dealerOrder.indexOf(card.userId)
             let whosUpIndex = playedCardUsersOrderIndex + 1
             if (!game.dealerOrder[whosUpIndex]) {
                 whosUpIndex = 0

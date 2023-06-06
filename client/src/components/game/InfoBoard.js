@@ -17,17 +17,28 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betSco
         
     }
     let scoreTable = []
-    if (players && betScores) {
+    if (players) {
+        
         for (let player of players) {
-    
-            const playerBet = betScores.find(bet => bet.userId == player.id)
             
+            let playerBet = {
+                bet: "-",
+                tricksWon: "-"
+            }
+            console.log("betScores", betScores)
+            if (betScores && betScores.length > 0) {
+                let findBet = betScores.find(bet => bet.userId == player.id)
+                if (findBet) {
+                    playerBet = findBet
+                }
+            }
+            console.log("playerBet", playerBet)
             scoreTable.push(
                 <tr key={player.id}>
                     <td>{player.username}</td>
-                    <td>{playerBet?.bet}</td>
-                    <td>{playerBet?.tricksWon}</td>
-                    <td>{playerBet?.score}</td>
+                    <td>{playerBet.bet}</td>
+                    <td>{playerBet.tricksWon}</td>
+                    <td>{player.gameScore}</td>
                 </tr>
             )
         }

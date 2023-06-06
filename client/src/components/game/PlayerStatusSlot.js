@@ -65,7 +65,14 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
                 
         } else if (phaseOver.winnerId == player?.id && player) {
             console.log("Missed the betting ifs winner found")
-            if (phaseOver.whatsOver == "round") {
+            if (phaseOver.whatsOver == "game") {
+                    statusDisplay = (
+                        <div className="winner" onClick={nextGamePhase}>
+                            <h5>{player?.username} Won the trick! Game Over!</h5>
+                            <p>Click to see game recap</p>
+                        </div>
+                    )
+            } else if (phaseOver.whatsOver == "round") {
                 //Trick and Round over
                 console.log("Game Tile caught the roundOver if")
                 statusDisplay = (
