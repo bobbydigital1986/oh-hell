@@ -5,7 +5,7 @@ const Chat = ({ user, messages, sendMessage }) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         if (inputValue.trim() !== '') {
-            const signedMessage = `${user.email}: ${inputValue}`
+            const signedMessage = `${user.username}: ${inputValue}`
             sendMessage(signedMessage);
             setInputValue('');
         }
@@ -20,7 +20,7 @@ const Chat = ({ user, messages, sendMessage }) => {
 
     return (
         <>
-            <h1>Chat Room</h1>
+            <h5>Chat</h5>
             <div className='input-group message-field grid-x'>
                 <form onSubmit={handleSubmit} className="input-field small-10">
                     <input type="text" value={inputValue}  onChange={(event) => setInputValue(event.target.value)} />
