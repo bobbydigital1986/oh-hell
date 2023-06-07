@@ -6,10 +6,6 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betSco
     console.log("Round", round)
     console.log("gameinfo board players", players)
 
-    const playerNames = players.map(player => {
-        return player.username
-    })
-
     let dealerName
     if (dealerId) {
         let dealer = players.find(player => player.id == dealerId)
@@ -59,8 +55,9 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betSco
     //     </div>
     // )
     return (
-        <div className="cell small-4 game-info">
-            <ul className="no-bullet ">
+        <div className="cell small-8 game-info">
+            <h5 className="centered">Game Info</h5>
+            <ul className="no-bullet info-list">
                 <li>Round: {round?.numberOfTricks}</li>
                 <li>Dealer: {dealerName}</li>
                 <li>Trump: {trump?.suitUnicode}{trump?.suit}{trump?.suitUnicode}</li>
@@ -70,7 +67,7 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betSco
                 <table className="score-table">
                     <thead>
                         <tr>
-                        <th>GAME SCORE</th>
+                        <th>SCORES</th>
                         <th>Bet</th>
                         <th>Won</th>
                         <th>Overall</th>

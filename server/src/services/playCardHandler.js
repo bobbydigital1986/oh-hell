@@ -1,6 +1,4 @@
-import { Game, Round, Trick, Card, BetScore } from "../models/index.js"
-import { raw } from 'objection'
-
+import { Registration, Round, Trick, Card, BetScore } from "../models/index.js"
 
 const playCardHandler = async(game, round, trick, card) => {
     
@@ -125,13 +123,18 @@ const playCardHandler = async(game, round, trick, card) => {
                 playCardResponse.phaseOver.whatsOver = "round"
                 
                 console.log("roundPhaseEnded", roundPhaseEnded)
+                const currentPlayers = await Registration.query()
+                    .where({ gameId: game.id })
+                    .join('users', 'registrations.userId', 'users.id')
+                    .select('registrations.userId as id', 'users.username', 'registrations.gameScore')
+                    console.log("game:joined currentplayers", currentPlayers)
+                playCardResponse.players = currentPlayers
                 if (roundPhaseEnded.numberOfTricks >= game.numberOfRounds) {
                     //Game over
                     console.log('CAUGHT THE GAMEOVER IF')
                     playCardResponse.phaseOver.whatsOver = "game"
                     return playCardResponse
                 }
-    
                 return playCardResponse
             }
         } else {

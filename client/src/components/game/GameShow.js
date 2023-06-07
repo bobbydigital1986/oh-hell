@@ -86,10 +86,7 @@ const GameShow = ({ user, socket, ...rest}) => {
             console.log('card:played trickAndRoundOver')
             setPlayedCards(playCardResponse.playedCards)
             setBetScores(playCardResponse.betScores)
-            // setTrickOver({
-            //     isOver: playCardResponse.trickOver,
-            //     winnerId: playCardResponse.winnerId
-            // })
+            setPlayers(playCardResponse.players)
             setPhaseOver({
                 whatsOver: "round",
                 winnerId: playCardResponse.phaseOver.winnerId
@@ -114,6 +111,7 @@ const GameShow = ({ user, socket, ...rest}) => {
             setPhaseOver({
                 whatsOver: "game"
             })
+            setPlayers(playCardResponse.players)
         })
 
         socket.on('card:played trickOver', (playCardResponse) => {
