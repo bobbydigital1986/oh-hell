@@ -60,7 +60,7 @@ const GameShow = ({ user, socket, ...rest}) => {
             setPlayers(gameStatus.players)
         })
 
-        socket.emit('chat message', `${user.username} has joined the game`)
+        socket.emit('chat message', `${user.username} has joined the game`, gameId)
 
         socket.emit('game:joined', { gameId, user })
 
@@ -240,7 +240,7 @@ const GameShow = ({ user, socket, ...rest}) => {
     }
 
     const sendMessage = (newMessage) => {
-        socket.emit("chat message", newMessage)
+        socket.emit("chat message", newMessage, gameId)
     }
 
     let trumpCard
