@@ -50,9 +50,9 @@ const io = new Server(server)
 io.on('connection', (socket) => {
   console.log('Client connected');
 
-  socket.on('chat message', (message) => {
-    console.log(`Received message: ${message}`);
-    io.emit('chat message', message);
+  socket.on('chat message', (message, gameId) => {
+    console.log(`Received message: ${message}`, "in gameId", gameId);
+    io.in(gameId).emit('chat message', message);
   });
 
   socket.on('game:create', async(user, numberOfPlayers, numberOfRounds) => {
