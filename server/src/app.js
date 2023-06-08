@@ -55,10 +55,9 @@ io.on('connection', (socket) => {
     io.in(gameId).emit('chat message', message);
   });
 
-  socket.on('game:create', async(user, numberOfPlayers, numberOfRounds) => {
-    const selectedGame = await createGame(user, numberOfPlayers, numberOfRounds)
-    // console.log(selectedGame)
-    // console.log("selectedGame", selectedGame)
+  socket.on('game:create', async(user, numberOfPlayers, numberOfRounds, gameCreate) => {
+    const selectedGame = await createGame(user, numberOfPlayers, numberOfRounds, gameCreate)
+
     if (selectedGame.findGame) {
       io.to(socket.id).emit('game:create join-existing', { existingGameId: selectedGame.findGame.id })
     } else {

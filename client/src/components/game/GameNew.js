@@ -2,12 +2,23 @@ import React, { useEffect, useState } from "react";
 import Chat from "../Chat";
 import { Redirect } from "react-router-dom";
 
+const GameNew = ({ user, socket, gameSettings, ...props}) => {
 
-const GameNew = ({ user, socket }) => {
-
+    console.log("GameNew gameSettings", props.location.gameSettings)
     const [gameId, setGameId] = useState(null)
     // console.log(gameId)
 
+    console.log(props)
+    
+    let numberOfPlayers = 4
+    let numberOfRounds = 3
+    let gameCreate = false
+    if (props.location.gameSettings) {
+        numberOfPlayers = props.location.gameSettings.numberOfPlayers
+        numberOfRounds = props.location.gameSettings .numberOfRounds
+        gameCreate = true
+    }
+    
     useEffect(() => {
         socket.on('connect', () => {
             console.log('Connected to server');
@@ -23,7 +34,7 @@ const GameNew = ({ user, socket }) => {
             setGameId(gameId.existingGameId)
         })
         
-        socket.emit("game:create", user, 4, 2)
+        socket.emit("game:create", user, numberOfPlayers, numberOfRounds, gameCreate)
         //("game:create", user, numberOfPlayers, numberOfRounds)
 
         return () => {
