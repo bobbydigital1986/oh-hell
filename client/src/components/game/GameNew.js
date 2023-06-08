@@ -12,11 +12,11 @@ const GameNew = ({ user, socket, gameSettings, ...props}) => {
     
     let numberOfPlayers = 4
     let numberOfRounds = 3
+    let gameCreate = false
     if (props.location.gameSettings) {
         numberOfPlayers = props.location.gameSettings.numberOfPlayers
         numberOfRounds = props.location.gameSettings .numberOfRounds
-        console.log("numberOfPlayers", numberOfPlayers)
-        console.log("numberOfRounds", numberOfRounds)
+        gameCreate = true
     }
     
     useEffect(() => {
@@ -34,7 +34,7 @@ const GameNew = ({ user, socket, gameSettings, ...props}) => {
             setGameId(gameId.existingGameId)
         })
         
-        socket.emit("game:create", user, numberOfPlayers, numberOfRounds)
+        socket.emit("game:create", user, numberOfPlayers, numberOfRounds, gameCreate)
         //("game:create", user, numberOfPlayers, numberOfRounds)
 
         return () => {

@@ -1,14 +1,19 @@
 import { Game, User, Registration } from "../models/index.js"
 
-const createGame = async(user, numberOfPlayers, numberOfRounds) => {
-    console.log("in createGame")
-    const findGame = await Game.query().findOne({ acceptingRegistrants: true })
-    console.log("createGame", user)
-    if (!findGame) {
+const createGame = async(user, numberOfPlayers, numberOfRounds, gameCreate) => {
+    if (gameCreate) {
         const newGame = await Game.query().insertAndFetch({ ownerId: user.id, numberOfPlayers, numberOfRounds })
         return { newGame }
+
     } else {
-        return { findGame }
+        const findGame = await Game.query().findOne({ acceptingRegistrants: true })
+        if (findGame) {
+            return { findGame }
+        }
+        else {
+            const newGame = await Game.query().insertAndFetch({ ownerId: user.id, numberOfPlayers, numberOfRounds })
+            return { newGame }
+        }
     }
 }
 
