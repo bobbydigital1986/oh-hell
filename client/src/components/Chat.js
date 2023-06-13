@@ -21,11 +21,11 @@ const Chat = ({ user, messages, sendMessage }) => {
     return (
         <>
             <h5>Chat</h5>
-            <div className='input-group message-field grid-x'>
-                <form onSubmit={handleSubmit} className="input-field small-10">
+            <div className='input-group message-field'>
+                <form onSubmit={handleSubmit} className="input-group-field ">
                     <input type="text" value={inputValue}  onChange={(event) => setInputValue(event.target.value)} />
                 </form>
-                <button type="submit" className="button input-group-button small-2">Send</button>
+                <button type="submit" className="button input-group-button">Send</button>
             </div>
             <div className="messages">
                 {messagesComponent}

@@ -77,7 +77,7 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
                 console.log("Game Tile caught the roundOver if")
                 statusDisplay = (
                     <div className="winner" onClick={nextGamePhase}>
-                        <h5>{player?.username} Won!</h5>
+                        <p>{player?.username} Won!</p>
                         <p>Click for next round</p>
                     </div>
                 )
