@@ -67,9 +67,9 @@ const WelcomePage = (props) => {
 
 
     return (
-        <>
+        <div className="welcome-page">
             <h1>Welcome to Oh Hell</h1>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="game-configuration">
                 <label>
                     Number of Players:
                     <select name="numberOfPlayers" onChange={handleInputChange} value={gameSettings.numberOfPlayers}>
@@ -83,11 +83,11 @@ const WelcomePage = (props) => {
                     </select>
                 </label>
                 <div className="button-group">
-                    <input className="button" type="submit" value="Create Game" />
+                    <input className="button link-button" type="submit" value="Create Game" />
                 </div>
             </form>
-            <Link to="/game/new" type="button">Join An Existing Game</Link>
-        </>
+            <Link to="/game/new" type="button" className="button link-button">Join An Existing Game</Link>
+        </div>
     )
 }
 

@@ -55,7 +55,7 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betSco
     //     </div>
     // )
     return (
-        <div className="cell small-8 game-info">
+        <div className="cell small-6 game-info">
             <h5 className="centered">Game Info</h5>
             <ul className="no-bullet info-list">
                 <li>Round: {round?.numberOfTricks}</li>

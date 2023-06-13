@@ -14,30 +14,46 @@
 }
 
 
+body {
+  color: #F5CB5C;
+  background-color: #242423;
+}
+
+.game-configuration {
+  color: #F5CB5C;
+  justify-content: center;
+}
+
+label {
+  color: #F5CB5C
+}
+
+
 .game-sideboard {
   height: 90vh;
-  background-color: rgb(45, 120, 45);
+  background-color: #242423;
 }
 
 .gameboard {
-  background-color: green;
+  background-color: #242423;
 }
 
 .game-info {
-  border: 2px solid black;
+  border: 2px solid #E8EDDF;
   border-radius: 2em;
   height: 30%;
   padding: .8rem;
-  background-color: azure
+  background-color: #333533;
+  margin: 1rem 0 0 0
 }
 
 .info-list {
   font-size: small;
 }
 
-.played-card {
+.played-card-slot {
   padding: 1em;
-  border-left: 5px black solid;
+  border-left: 5px #E8EDDF solid;
 }
 
 h4 {
@@ -49,19 +65,129 @@ h4.player-tile-top-slots {
 
 }
 
+
+.welcome-page {
+  text-align: center;
+  padding: 20px;
+  justify-content: center;
+  background-color: #242423;
+}
+
+h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.select-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.top-bar{
+  background-color: #333533;
+}
+.top-bar ul{
+  background-color: #333533;
+}
+.top-bar a {
+  color: #E8EDDF
+}
+.top-bar a:hover {
+  color: #CFDBD5
+}
+
+select {
+  width: 40%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  // margin-left: 10px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #242423;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.button:hover {
+  background-color: #CFDBD5;
+}
+
+.button:active {
+  background-color: #E8EDDF;
+}
+
+.link-button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #F5CB5C;
+  color: #333533;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  margin-top: 10px;
+}
+
+.link-button:hover {
+  background-color: #CFDBD5;
+}
+
+.link-button:active {
+  background-color: #CFDBD5;
+}
+
 .player-tiles {
   height: 100%;
   text-align: center;
 }
 
-.button {
-  padding: 0;
-  // height: 100%;
+select {
+  background-color: #CFDBD5;
 }
+
+// .button {
+//   padding: 0;
+//   background-color: #E8EDDF;
+//   color: #333533
+//   // height: 100%;
+// }
 
 .input-group {
   margin: 0;
   padding: 0;
+  background-color: #E8EDDF;
+}
+
+.input-field {
+  margin: 0
 }
 
 .start-button {
@@ -69,14 +195,14 @@ h4.player-tile-top-slots {
 }
 
 .player-tile {
-  background-color: rgb(45, 120, 45);
-  border: 2px solid black;
+  background-color: #333533;
+  border: 1px solid #E8EDDF;
   border-radius: 2em;
-  margin: 1em;
+  margin: 1rem;
 }
 
 .open-slot {
-  background-color: rgb(142, 174, 109);
+  background-color: #4d4f4d;
 }
 
 .playing-card {
@@ -85,6 +211,7 @@ h4.player-tile-top-slots {
   border-radius: .5em;
   height: 7rem;
   max-width: 4.5rem;
+  color: #242423;
   // width: 4.5rem;
 }
 
@@ -98,26 +225,33 @@ h4.player-tile-top-slots {
 }
 
 .chatbox {
-  border: 2px solid black;
+  border: 2px solid #E8EDDF;
   border-radius: 2em;
   padding: .8rem;
   overflow-y: scroll;
-  background-color: azure;
+  background-color: #333533;
+  margin: .5rem 0;
 }
 
 .messages {
-  font-size: .6rem;
-  color:rgb(45, 120, 45);
+  font-size: .8rem;
+  color: #F5CB5C;
   overflow-y: scroll;
+}
+
+tbody th, tbody td {
+  padding: 5px
 }
 
 input[type=text] {
   font-size: .8em;
   height: 1.5rem;
+  background-color: #E8EDDF;
+  margin: 0
 }
 
 .your-turn {
-  background-color: yellow;
+  background-color: E8EDDF;
   border-radius: .5rem;
   height: 100%;
   padding: .25rem 0;
@@ -148,11 +282,17 @@ input[type=text] {
 }
 
 .winner {
-  background-color: blue;
-  color: white;
+  background-color: #F5CB5C;
+  color: #333533;
+  border-radius: 1rem;
+  padding: 1rem
 }
 
 .score-table {
   width: 100%;
   font-size: .5em;
+}
+
+td {
+  color: #242423;
 }

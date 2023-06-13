@@ -113,7 +113,7 @@ const PlayerTile = ({
                             playerBetScore={playerBetScore}
                         />
                     </div>
-                    <div className="cell small-4 played-card"> 
+                    <div className="cell small-4 played-card-slot"> 
                         {playedCardSlot}
                     </div>
                 </div>
