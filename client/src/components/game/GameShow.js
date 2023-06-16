@@ -280,6 +280,13 @@ const GameShow = ({ user, socket, ...rest}) => {
             if (betScores) {
                 playerBetScore = betScores.find(bet => bet?.userId == players[i].id)
             }
+            let sumOfCurrentBets = 0
+            if (round?.phase == "betting" && betScores) {
+                sumOfCurrentBets = betScores.reduce((accumulator, nextBet) => accumulator + nextBet.bet, 0)
+                console.log("sumOfCurrentBets", sumOfCurrentBets)
+            } else {
+                console.log(`didn't calculate sumOfCurrentBets`)
+            }
 
             let tile = (
                 <PlayerTile
@@ -299,6 +306,7 @@ const GameShow = ({ user, socket, ...rest}) => {
                     betSubmitter={betSubmitter}
                     gameStarted={gameStarted}
                     handleStart={handleStart}
+                    sumOfCurrentBets={sumOfCurrentBets}
                 />
             )
             if (players[i]?.id == user.id) {

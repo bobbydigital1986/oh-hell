@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 
-const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, player, whosTurn, betSubmitter, nextGamePhase, handleStart, playerBetScore }) => {
+const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, player, whosTurn, betSubmitter, nextGamePhase, handleStart, playerBetScore, sumOfCurrentBets }) => {
     
     const [input, setInput] = useState(0)
 
@@ -11,7 +11,12 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
                 {i}
             </option>
         )
-        betOptions.push(option)
+        if ((i + sumOfCurrentBets) == round?.numberOfTricks && round?.dealerId == player.id) {
+            console.log("Cannot bet", i)
+        } else {
+            console.log("valid bet", i)
+            betOptions.push(option)
+        }
     }
 
     const handleSubmit = (event) => {
