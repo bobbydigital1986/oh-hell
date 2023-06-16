@@ -255,6 +255,14 @@ const GameShow = ({ user, socket, ...rest}) => {
         //MAY WANT TO NOT SET ANY STATE - JUST BROADCAST AND ALLOW BACKEND TO SET STATE BY REPLYING TO ALL
     }
 
+    let sumOfCurrentBets = 0
+    if (round?.phase == "betting" && betScores) {
+        sumOfCurrentBets = betScores.reduce((accumulator, nextBet) => accumulator + nextBet.bet, 0)
+        console.log("sumOfCurrentBets", sumOfCurrentBets)
+    } else {
+        console.log(`didn't calculate sumOfCurrentBets`)
+    }
+
     let playerTiles = []
     if (phaseOver.whatsOver == "game") {
         let gameOverDisplay = (
@@ -279,13 +287,6 @@ const GameShow = ({ user, socket, ...rest}) => {
             // if (betScores?.length > 0 && betScores[0]?.userId) {
             if (betScores) {
                 playerBetScore = betScores.find(bet => bet?.userId == players[i].id)
-            }
-            let sumOfCurrentBets = 0
-            if (round?.phase == "betting" && betScores) {
-                sumOfCurrentBets = betScores.reduce((accumulator, nextBet) => accumulator + nextBet.bet, 0)
-                console.log("sumOfCurrentBets", sumOfCurrentBets)
-            } else {
-                console.log(`didn't calculate sumOfCurrentBets`)
             }
 
             let tile = (
