@@ -171,6 +171,9 @@ const GameShow = ({ user, socket, ...rest}) => {
 
         socket.on("bet:submitted success", (betResponse) => {
             console.log("bet:submitted success", betResponse)
+            if (betResponse.badBetMessage) {
+                alert(betResponse.badBetMessage)
+            }
             setBetScores(betResponse.bets)
             setRound(betResponse.round)
             setWhosTurn(betResponse.round.whosTurn)

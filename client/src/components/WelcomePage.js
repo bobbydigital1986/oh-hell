@@ -4,7 +4,7 @@ import { Link, Redirect } from "react-router-dom";
 const WelcomePage = (props) => {
 
     const [gameSettings, setGameSettings] = useState({
-        numberOfPlayers: 1,
+        numberOfPlayers: 4,
         numberOfRounds: 3
     })
     const [shouldRedirect, setShouldRedirect] = useState(false)

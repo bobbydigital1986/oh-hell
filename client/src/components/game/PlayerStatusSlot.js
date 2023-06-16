@@ -2,7 +2,7 @@ import React, { useState } from "react"
 
 const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, player, whosTurn, betSubmitter, nextGamePhase, handleStart, playerBetScore, sumOfCurrentBets }) => {
     
-    const [input, setInput] = useState(0)
+    const [input, setInput] = useState(null)
 
     let betOptions = []
     for (let i = 0; i <= round?.numberOfTricks; i++) {
@@ -11,7 +11,7 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
                 {i}
             </option>
         )
-        if ((i + sumOfCurrentBets) == round?.numberOfTricks && round?.dealerId == player.id) {
+        if ((i + sumOfCurrentBets) == round?.numberOfTricks && round?.dealerId == player?.id) {
             console.log("Cannot bet", i)
         } else {
             console.log("valid bet", i)
@@ -21,7 +21,11 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        betSubmitter(input)
+        if (!input || input == 99) {
+            alert("Pick a valid bet")
+        } else {
+            betSubmitter(input)
+        }
     }
 
     console.log(input)
@@ -45,6 +49,9 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
                             <label>
                             Your Bet:
                             <select name="bet" onChange={handleInputChange}>
+                                <option id={50} key={50} value={99} disabled="disabled" selected="selected"> 
+                                        --
+                                </option>
                                 {betOptions}
                             </select>
                             </label>
