@@ -171,6 +171,9 @@ const GameShow = ({ user, socket, ...rest}) => {
 
         socket.on("bet:submitted success", (betResponse) => {
             console.log("bet:submitted success", betResponse)
+            if (betResponse.badBetMessage) {
+                alert(betResponse.badBetMessage)
+            }
             setBetScores(betResponse.bets)
             setRound(betResponse.round)
             setWhosTurn(betResponse.round.whosTurn)
@@ -255,6 +258,14 @@ const GameShow = ({ user, socket, ...rest}) => {
         //MAY WANT TO NOT SET ANY STATE - JUST BROADCAST AND ALLOW BACKEND TO SET STATE BY REPLYING TO ALL
     }
 
+    let sumOfCurrentBets = 0
+    if (round?.phase == "betting" && betScores) {
+        sumOfCurrentBets = betScores.reduce((accumulator, nextBet) => accumulator + nextBet.bet, 0)
+        console.log("sumOfCurrentBets", sumOfCurrentBets)
+    } else {
+        console.log(`didn't calculate sumOfCurrentBets`)
+    }
+
     let playerTiles = []
     if (phaseOver.whatsOver == "game") {
         let gameOverDisplay = (
@@ -299,6 +310,7 @@ const GameShow = ({ user, socket, ...rest}) => {
                     betSubmitter={betSubmitter}
                     gameStarted={gameStarted}
                     handleStart={handleStart}
+                    sumOfCurrentBets={sumOfCurrentBets}
                 />
             )
             if (players[i]?.id == user.id) {

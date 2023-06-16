@@ -30,26 +30,41 @@ const betHandler = async(bet, round, game, user) => {
     // console.log("whosTurnToBetMaybeString", whosTurnToBetMaybeString)
     // let whosTurnToBet = parseInt(whosTurnToBetMaybeString)
     console.log("whosTurnToBet", whosTurnToBet)
-    const allBets = await Round.relatedQuery("betScores").for(round.id)
-    console.log("betHandler allBets related query", allBets)
-    if (game.numberOfPlayers <= allBets.length) {
+    let allRoundBets = await Round.relatedQuery("betScores").for(round.id)
+    console.log("betHandler allRoundBets related query", allRoundBets)
+    const sumOfCurrentBets = allRoundBets.reduce((accumulator, nextBet) => accumulator + nextBet.bet, 0)
+    if (sumOfCurrentBets == round.numberOfTricks && user.id == round.dealerId) {
+        console.log("BET WAS INVALID -- UNDOING EVERYTHING")
+        await BetScore.query().deleteById(newBet.id)
+        allRoundBets = await Round.relatedQuery("betScores").for(round.id)
+        let undoneBetResponse = {
+            bets: allRoundBets,
+            game: game,
+            round: round,
+            user: user,
+            badBetMessage: "Somehow a bad bet got through - bet was annulled and player bets again"
+        }
+        return undoneBetResponse 
+
+    } else if (game.numberOfPlayers <= allRoundBets.length) {
         console.log("ALL BETS HAVE BEEN MADE, UPDATE ROUND PHASE")
         console.log("game.numberOfPlayers", game.numberOfPlayers)
-        console.log("allBets", allBets)
+        console.log("allRoundBets", allRoundBets)
         updatedRound = await Round.query().patchAndFetchById(round.id, {
             whosTurn: whosTurnToBet,
             phase: "playing"
         })
+        
     } else {
         console.log("MORE BETS TO MADE, RESUME BETTING PHASE")
         console.log("game.numberOfPlayers", game.numberOfPlayers)
-        console.log("allBets", allBets)
+        console.log("allRoundBets", allRoundBets)
         updatedRound = await Round.query().patchAndFetchById(round.id, { whosTurn: whosTurnToBet })
     }
     console.log(" betHandler updatedRound", updatedRound)
     
     let betResponse = {
-        bets: allBets,
+        bets: allRoundBets,
         game: game,
         round: Round.roundSerializer(updatedRound),
         user: user

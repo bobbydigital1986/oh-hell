@@ -19,7 +19,8 @@ const PlayerTile = ({
     betScores,
     gameStarted,
     handleStart,
-    playerBetScore
+    playerBetScore,
+    sumOfCurrentBets
 }) => {
 
 
@@ -111,6 +112,7 @@ const PlayerTile = ({
                             handleStart={handleStart}
                             betSubmitter={betSubmitter}
                             playerBetScore={playerBetScore}
+                            sumOfCurrentBets={sumOfCurrentBets}
                         />
                     </div>
                     <div className="cell small-4 played-card-slot"> 
