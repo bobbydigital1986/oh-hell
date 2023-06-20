@@ -126,13 +126,35 @@ const playCardHandler = async(game, round, trick, card) => {
                 const currentPlayers = await Registration.query()
                     .where({ gameId: game.id })
                     .join('users', 'registrations.userId', 'users.id')
-                    .select('registrations.userId as id', 'users.username', 'registrations.gameScore')
-                    console.log("game:joined currentplayers", currentPlayers)
+                    .select('registrations.userId as id', 'registrations.id as registrantId', 'users.username', 'registrations.gameScore', 'registrations.wonGame')
+                    .orderBy('registrations.gameScore', 'DESC')
+                console.log("playCardHandler currentplayers", currentPlayers)
                 playCardResponse.players = currentPlayers
                 if (roundPhaseEnded.numberOfTricks >= game.numberOfRounds) {
                     //Game over
                     console.log('CAUGHT THE GAMEOVER IF')
                     playCardResponse.phaseOver.whatsOver = "game"
+                    playCardResponse.winners = []
+                    for (let i = 0; i < currentPlayers.length; i++) {
+                        let currentPlayerIndex = i
+                        let nextPlayerIndex = i + 1
+
+                        if (currentPlayers[currentPlayerIndex].gameScore > currentPlayers[nextPlayerIndex].gameScore) {
+                            let gameWinner = await Registration.query().patchAndFetchById(currentPlayers[currentPlayerIndex].registrantId, {wonGame: true})
+                            console.log("gameWinner should end for loop i is", i, "gameWinner is:", gameWinner)
+                            playCardResponse.winners.push(gameWinner)
+                            currentPlayers[currentPlayerIndex].wonGame = true
+                            i = currentPlayers.length
+                        } else if (currentPlayers[currentPlayerIndex].gameScore = currentPlayers[nextPlayerIndex].gameScore) {
+                            let gameWinner = await Registration.query().patchAndFetchById(currentPlayers[currentPlayerIndex].registrantId, {wonGame: true})
+                            playCardResponse.winners.push(gameWinner)
+                            currentPlayers[currentPlayerIndex].wonGame = true
+                            console.log("gameWinner continuing loop i is", i, "gameWinner is:", gameWinner)
+                        } else {
+                            console.log("missed the gameWinner ifs, i is:", i)
+                        }
+                    }
+                    console.log("playCardResponse gameOver:", playCardResponse)
                     return playCardResponse
                 }
                 return playCardResponse

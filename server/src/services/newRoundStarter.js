@@ -5,7 +5,7 @@ const newRoundStarter = async (gameId, existingRound) => {
     const game = await Game.query().findById(gameId)
     console.log("game",game)
     // const existingRounds = await Round.query().where("gameId", gameId)
-    // console.log("existingRounds",existingRounds)
+    console.log("existingRound",existingRound)
 
     // const existRoundCount = existingRounds.length
     // console.log("existRoundCount",existRoundCount)
@@ -17,7 +17,12 @@ const newRoundStarter = async (gameId, existingRound) => {
     let whosTurnId = game.dealerOrder[newRoundNumberOfTricks]
     if (!whosTurnId) {
         whosTurnId = game.dealerOrder[0]
+        if (whosTurnId == newDealerId) {
+            whosTurnId = game.dealerOrder[1]
+        }
     }
+    console.log("whoTurnId after resetting to 0 if needed", whosTurnId)
+
 
     console.log("newRoundNumber",newRoundNumberOfTricks)
 
@@ -34,8 +39,7 @@ const newRoundStarter = async (gameId, existingRound) => {
         gameInfo: game,
         round: newRound,
         trick: newTrick,
-        deck: newDeck,
-        whosTurn: whosTurnId
+        deck: newDeck
     }
     
     return roundPackage

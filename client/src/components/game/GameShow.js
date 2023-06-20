@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Chat from "../Chat";
 import PlayerTile from "./PlayerTile";
 import InfoBoard from "./InfoBoard";
+import { Redirect } from "react-router-dom";
+
 
 
 const GameShow = ({ user, socket, ...rest}) => {
@@ -29,7 +31,7 @@ const GameShow = ({ user, socket, ...rest}) => {
         whatsOver: "", //trick, round, game
         winnerId: null // id of winning user
     })
-
+    const [shouldRedirect, setShouldRedirect] = useState(false)
     const { gameId } = rest.computedMatch.params
     // console.log("Game User", user)
 
@@ -197,7 +199,7 @@ const GameShow = ({ user, socket, ...rest}) => {
             setTrick(roundPackage.trick)
             setRound(roundPackage.round)
             setDealtCards(roundPackage.deck)
-            setWhosTurn(roundPackage.whosTurn)
+            setWhosTurn(roundPackage.round.whosTurn)
             setDealerId(roundPackage.round.dealerId)
             setBetScores()
         })
@@ -266,13 +268,53 @@ const GameShow = ({ user, socket, ...rest}) => {
         console.log(`didn't calculate sumOfCurrentBets`)
     }
 
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        setShouldRedirect(true)
+    }
+
+    // When join game by ID is implemented, this can be used
+    // if (shouldRedirect === true ) {
+    //     console.log("caught the redirect gameInfo")
+    //     return <Redirect to={{
+    //         pathname: "/game/new",
+    //         gameSettings: {
+    //             numberOfPlayers: gameInfo.numberOfPlayers,
+    //             numberOfRounds: gameInfo.numberOfRounds
+    //         }
+    //         }}
+    //     />
+    // }
+
+    if (shouldRedirect === true ) {
+        console.log("caught the redirect gameInfo")
+        return <Redirect to={{
+            pathname: "/"
+            }}
+        />
+    }
+
     let playerTiles = []
     if (phaseOver.whatsOver == "game") {
+        let winnerSummary = []
         let gameOverDisplay = (
-            <>
-                <h1>Someone won!</h1>
-            </>
+            <div>
+                <h1>Game Over!</h1>
+                <br/>
+                {winnerSummary}
+                <br/>
+                <button className="button" type="button" onClick={handleSubmit}>Click to Return to Home Screen</button>
+            </div>
         )
+        players.map(player => {
+            if (player.wonGame) {
+                winnerSummary.push(
+                    <div className="winner-summary">
+                        {player.username} won with {player.gameScore} points!
+                    </div>
+                )
+            }
+        })
         playerTiles.push(gameOverDisplay)
     } else if (gameInfo) {
         console.log("entered playerTileBuilder")
