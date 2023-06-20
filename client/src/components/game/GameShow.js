@@ -197,7 +197,7 @@ const GameShow = ({ user, socket, ...rest}) => {
             setTrick(roundPackage.trick)
             setRound(roundPackage.round)
             setDealtCards(roundPackage.deck)
-            setWhosTurn(roundPackage.whosTurn)
+            setWhosTurn(roundPackage.round.whosTurn)
             setDealerId(roundPackage.round.dealerId)
             setBetScores()
         })
