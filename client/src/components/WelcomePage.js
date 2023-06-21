@@ -74,7 +74,7 @@ const WelcomePage = (props) => {
                 <Link push to="/howtoplay" className="button">Click here for more details on how to play</Link>
             </div>
             <div className="cell small-10 welcome-section">
-                <h1>Get into the Game</h1>
+                <h1>Play Oh Hell</h1>
                 <form onSubmit={handleSubmit} className="game-configuration">
                     <label>
                         Number of Players:
