@@ -12,6 +12,7 @@ import GameNew from "./game/GameNew";
 import GameShow from "./game/GameShow";
 import Chat from "./Chat"
 import AuthenticatedRoute from "./authentication/AuthenticatedRoute";
+import HowToPlay from "./HowToPlay";
 
 const App = (props) => {
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -32,6 +33,7 @@ const App = (props) => {
     <Router>
       <TopBar user={currentUser} />
       <Switch>
+        <Route exact path="/howtoplay" component={HowToPlay}/>
         <AuthenticatedRoute
           exact path="/game/new"
           component={GameNew}

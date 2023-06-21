@@ -19,6 +19,24 @@ body {
   background-color: #242423;
 }
 
+.welcome-section {
+  background-color: #4d4f4d;
+  margin: 1rem;
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+p.game-description {
+  text-align: justify;
+}
+
+.how-to-play {
+  width: 80%;
+}
+.how-to-play-page {
+  justify-content: center;
+}
+
 .game-configuration {
   color: #F5CB5C;
   justify-content: center;
