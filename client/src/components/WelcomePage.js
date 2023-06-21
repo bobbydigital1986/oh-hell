@@ -71,7 +71,7 @@ const WelcomePage = (props) => {
             <div className="cell small-10 welcome-section">
                 <h1>Welcome to Oh Hell</h1>
                 <p className="game-description">Oh Hell is a trick-taking game that can be played with 3 to 7 players, although it's most commonly played with 4 or 5 players. The game follows a bidding process where players predict the number of tricks they will take in each round. It's an entertaining and strategic game that requires players to make accurate predictions and employ tactics to outscore their opponents.</p>
-                <Link push to="/howtoplay" className="button">Click here for more details on how to play</Link>
+                <Link push to="/howtoplay" className="button link-button">Click here for more details on how to play</Link>
             </div>
             <div className="cell small-10 welcome-section">
                 <h1>Play Oh Hell</h1>
