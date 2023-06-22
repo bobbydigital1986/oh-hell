@@ -14,7 +14,10 @@ const GameShow = ({ user, socket, ...rest}) => {
     const [whosTurn, setWhosTurn] = useState(null)
     const [gameInfo, setGameInfo] = useState({})
     const [gameStarted, setGameStarted] = useState(false)
-    const [leadSuit, setLeadSuit] = useState({})
+    const [leadSuit, setLeadSuit] = useState({
+        suit: "",
+        suitId: null
+    })
     const [round, setRound] = useState({
         id: null,
         gameId: null,

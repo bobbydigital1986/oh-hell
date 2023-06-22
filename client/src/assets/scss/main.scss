@@ -224,13 +224,10 @@ select {
 }
 
 .playing-card {
-  background-color: white;
   border: 2px solid black;
   border-radius: .5em;
-  height: 7rem;
   max-width: 4.5rem;
   color: #242423;
-  // width: 4.5rem;
 }
 
 .card-space {
@@ -277,20 +274,13 @@ input[type=text] {
 }
 
 .card-box {
-  height: 7rem;
+  // height: 7rem;
   // width: 90%;
   margin-left: -1.5rem;
 }
 
 .card-box.first-card {
   margin-left: 0;
-}
-
-.played-card {
-  // padding: 4px;
-  height: 7rem;
-  // max-width: 4.5rem;
-  // align-content: center;
 }
 
 .other-players-card {

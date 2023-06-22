@@ -5,10 +5,8 @@ const PlayedCard = ({ card, playCard, user }) => {
     
 
     return (
-        <div className="playing-card grid-x align-spaced played-card">
-                <div className="cell small-4 align-self-top"><div>{card.displayString}</div></div>
-                <div className="cell small-2 align-self-middle"><div></div></div>
-                <div className="cell small-4 align-self-bottom"><div>{card.displayString}</div></div>
+        <div className="playing-card">
+            <img src={card.faceUpImageURL} />
         </div>
     )
 
