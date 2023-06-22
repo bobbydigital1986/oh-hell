@@ -16,10 +16,8 @@ const PlayerCard = ({ card, playCard, user, canPlay, firstCard }) => {
     firstCard ? firstcardstyler = "small-2 card-box first-card" : firstcardstyler = "small-2 card-box"
 
     let cardController = (
-        <div className={firstcardstyler} onClick={handleClick}>
-            <div>
+        <div className={`${firstcardstyler} playing-card`} onClick={handleClick}>
                 <img src={card.faceUpImageURL} />
-            </div>
         </div>
         
     )

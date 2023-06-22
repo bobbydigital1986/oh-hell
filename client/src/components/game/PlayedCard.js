@@ -5,7 +5,7 @@ const PlayedCard = ({ card, playCard, user }) => {
     
 
     return (
-        <div className="playing-card played-card">
+        <div className="playing-card">
             <img src={card.faceUpImageURL} />
         </div>
     )
