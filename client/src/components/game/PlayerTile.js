@@ -41,7 +41,7 @@ const PlayerTile = ({
     )
     if (tileDealtCards) {
         let noLeadSuitInHand
-        if (Object.keys(leadSuit).length < 1) {
+        if (!leadSuit?.suitId) {
             // console.log("NO LEAD SUIT PLAYED YET")
             noLeadSuitInHand = true
         } else if (tileDealtCards.find(cardSuit => cardSuit.suitId == leadSuit.suitId)) {

@@ -17,19 +17,16 @@ const PlayerCard = ({ card, playCard, user, canPlay, firstCard }) => {
 
     let cardController = (
         <div className={firstcardstyler} onClick={handleClick}>
-            <div className="cmon grid-x align-spaced playing-card">
-                <div className="cell small-4 align-self-top"><p className="card-label">{card.displayString}</p></div>
-                <div className="cell small-2 align-self-middle"><div></div></div>
-                <div className="cell small-4 align-self-bottom"><p className="card-label">{card.displayString}</p></div>
+            <div>
+                <img src={card.faceUpImageURL} />
             </div>
         </div>
         
     )
-
     if (card.userId != user.id) {
         cardController = (
-            <div className={`${firstcardstyler} playing-card other-players-card`}>
-                <h1 className="cell">?</h1>
+            <div className={`${firstcardstyler} playing-card`}>
+                <img src={card.faceDownImageURL} />
             </div>
         )
     }
