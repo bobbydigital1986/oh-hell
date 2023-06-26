@@ -23,11 +23,14 @@ const PlayerTile = ({
     sumOfCurrentBets
 }) => {
 
-
     let slotName
     let slotStyle
+    let dealer
     if (player) {
         slotName = `${player.username}`
+        if (round.dealerId == player.id) {
+            dealer = "Dealer"
+        }
     } else {
         slotName = 'Open '
         slotStyle = "open-slot"
@@ -98,7 +101,10 @@ const PlayerTile = ({
         <>
             <div className={`cell small-6 player-tile ${slotStyle}`}>
                 <div className="grid-x player-tile-top-slots">
-                    <h1 className="cell small-4"> {slotName} </h1>
+                    <div className="cell small-4">
+                        <h2 > {slotName} </h2>
+                        <p className="dealer-indicator">{dealer}</p>
+                    </div>
                     <div className="cell small-4">
                         <PlayerStatusSlot
                             user={user}
