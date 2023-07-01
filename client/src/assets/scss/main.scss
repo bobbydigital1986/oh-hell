@@ -65,6 +65,10 @@ label {
   margin: 1rem 0 0 0
 }
 
+table tr:nth-child(n).winner-styling {
+  background-color: green;
+}
+
 .info-list {
   font-size: small;
 }
@@ -185,6 +189,12 @@ select {
 .player-tiles {
   height: 100%;
   text-align: center;
+}
+
+.dealer-indicator {
+  background-color: #F5CB5C;
+  color: #242423;
+  border-radius: .5rem;
 }
 
 select {

@@ -386,6 +386,7 @@ const GameShow = ({ user, socket, ...rest}) => {
                         gameInfo={gameInfo}
                         leadSuit={leadSuit}
                         betScores={betScores}
+                        phaseOver={phaseOver}
                     />
                     <div className="cell auto chatbox">
                         <Chat
