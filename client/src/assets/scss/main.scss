@@ -65,6 +65,10 @@ label {
   margin: 1rem 0 0 0
 }
 
+table tr:nth-child(n).winner-styling {
+  background-color: green;
+}
+
 .info-list {
   font-size: small;
 }

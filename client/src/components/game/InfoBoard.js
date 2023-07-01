@@ -1,10 +1,11 @@
 import React from "react";
 
-const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betScores }) => {
+const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betScores, phaseOver }) => {
     console.log("leadSuit", leadSuit)
     console.log("Trump", trump)
     console.log("Round", round)
     console.log("gameinfo board players", players)
+    console.log("gameinfo board phaseOver", phaseOver)
 
     let dealerName
     if (dealerId) {
@@ -13,10 +14,13 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betSco
         
     }
     let scoreTable = []
+    let winStyling = ""
+    let winCheck
+    let playerRow = 0
     if (players) {
         
         for (let player of players) {
-            
+            playerRow++
             let playerBet = {
                 bet: "-",
                 tricksWon: "-"
@@ -26,13 +30,27 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betSco
                 let findBet = betScores.find(bet => bet.userId == player.id)
                 if (findBet) {
                     playerBet = findBet
+                    console.log(`in gameInfo playerBet, ${player.username} phaseOver:`, phaseOver)
+                    
+                    if (phaseOver.whatsOver == "round" || phaseOver.whatsOver == "game" ) {
+                        console.log(`in gameInfo playerBet, ${player.username} playerBet:`, playerBet)
+                        if (playerBet.bet == playerBet.tricksWon && playerBet.bet != "-") {
+                            winStyling = "winner-styling"
+                            winCheck = "✔"
+                        } else {
+                            winStyling = ""
+                            winCheck = ""
+                        }
+                    }
                 }
             }
-            console.log("playerBet", playerBet)
+            
+            // console.log("playerBet", playerBet)
             scoreTable.push(
-                <tr key={player.id}>
+                // <tr key={player.id} className={winStyling}>
+                <tr key={player.id} className={winStyling}>
                     <td>{player.username}</td>
-                    <td>{playerBet.bet}</td>
+                    <td>{playerBet.bet} {winCheck}</td>
                     <td>{playerBet.tricksWon}</td>
                     <td>{player.gameScore}</td>
                 </tr>
