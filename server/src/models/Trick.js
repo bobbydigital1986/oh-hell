@@ -55,7 +55,7 @@ class Trick extends Model {
     static async determineTrickWinner(trick, tricksPlayedSoFar) {
         const { Card } = require("./index.js")
 
-        const trickPlayed = tricksPlayedSoFar.find(tricker => tricker.id == trick.id)
+        const trickPlayed = tricksPlayedSoFar.find(trickPlayed => trickPlayed.id == trick.id)
         console.log("determineTrickWinner trickPlayed query", trickPlayed)
         const trickPlayedCards = await trickPlayed.$relatedQuery("cardsPlayed")
         console.log("Trick => determineTrickWinner trickPlayedCards", trickPlayedCards)
@@ -86,7 +86,8 @@ class Trick extends Model {
         )
         console.log("determineTrickwinner highestScore", highestScore)
 
-
+        //These two can be combined into a graph upsert
+        const setTrickOver = await trickPlayed.$query().patch({ phase: "ended" })
         const setWinnerOfTrick = await trickPlayed.$relatedQuery("winner").relate(highestScore.userId)
         console.log("determineTrickwinner setWinnerOfTrick", setWinnerOfTrick)
 
