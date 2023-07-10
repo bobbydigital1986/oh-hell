@@ -1,4 +1,4 @@
-import { Registration, Round, Trick, Card, BetScore } from "../models/index.js"
+import { Registration, Round, Trick, Card, BetScore, Game } from "../models/index.js"
 
 const playCardHandler = async(game, round, trick, card) => {
     
@@ -20,6 +20,7 @@ const playCardHandler = async(game, round, trick, card) => {
         //First card played in trick - set leadSuit
         const playedCard = await Card.query().patchAndFetchById(card.id, { trickPlayedId: trick.id, trickLeadSuit: trick.id })
         console.log("playCard playedCard query", playedCard)
+        const trickInPlay = await Trick.query().patchAndFetchById(trick.id, { phase: "playing" })
 
         playCardResponse.playedCards = [...cardsPlayedPreviously, playedCard]
         playCardResponse.leadSuit = playedCard
@@ -136,6 +137,8 @@ const playCardHandler = async(game, round, trick, card) => {
                     //Game over
                     console.log('CAUGHT THE GAMEOVER IF')
                     playCardResponse.phaseOver.whatsOver = "game"
+                    const endedGame = await Game.query().patchAndFetchById(game.id, { gameOver: true })
+                    playCardResponse.game = endedGame
                     playCardResponse.winners = []
                     for (let i = 0; i < currentPlayersOrdered.length; i++) {
                         let currentPlayerIndex = i
