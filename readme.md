@@ -11,7 +11,7 @@ The card game is multiplayer but you can create of any number of players and jus
 
 # Tech Stack
 
-Oh-Hell is entirely operated by React, Socket.io, and Node. There are no API calls nor did I need to leverage Express except for some basic user management.
+Oh-Hell is entirely operated by React, Socket.io, and Node. There are no API calls nor did I need to leverage Express except for some basic user management(along with Passenger).
 
 React serves the frontend leveraging some Foundation library components.
 
