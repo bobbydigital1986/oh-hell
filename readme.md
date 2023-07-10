@@ -18,3 +18,7 @@ React serves the frontend leveraging some Foundation library components.
 Socket.Io operates as the two-way connection between server and client. When a player puts down a card, they send their played card information to the server which handles game logic and then broadcasts to the other players(clients) the played card information.
 
 Node powers the backend which handles the bulk of game logic. I intentionally handled all game logic on the backend to maintain synchronicity between clients.
+
+# Open Issues
+
+DB cleanup - there is still information that is artificially formed and not derived from the DB. With some cleanup, these React states can be set by concrete DB info and replicated upon disconnection/reconnection
