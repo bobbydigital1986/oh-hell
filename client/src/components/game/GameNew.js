@@ -4,11 +4,11 @@ import { Redirect } from "react-router-dom";
 
 const GameNew = ({ user, socket, gameSettings, ...props}) => {
 
-    console.log("GameNew gameSettings", props.location.gameSettings)
+    // console.log("GameNew gameSettings", props.location.gameSettings)
     const [gameId, setGameId] = useState(null)
     // console.log(gameId)
 
-    console.log(props)
+    // console.log(props)
     
     let numberOfPlayers = 4
     let numberOfRounds = 3
