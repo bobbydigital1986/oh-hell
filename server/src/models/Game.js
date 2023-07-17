@@ -61,11 +61,11 @@ class Game extends Model {
         let alternatingPlayers = []
 
         for (let i = 0; i < game.numberOfRounds; i++) {
-            console.log(alternatingPlayers)
-            console.log("playerIndex", playerIndex)
-            console.log(i)
-            console.log("players[playerIndex]", players[playerIndex])
-            console.log("players[playerIndex].id", players[playerIndex]?.id)
+            console.log("setDealerOrder alternatingPlayers", alternatingPlayers)
+            console.log("setDealerOrder playerIndex", playerIndex)
+            console.log("setDealerOrder i", i)
+            console.log("setDealerOrder players[playerIndex]", players[playerIndex])
+            console.log("setDealerOrder players[playerIndex].id", players[playerIndex]?.id)
             let newDealerId = players[playerIndex]?.id
             if (!players[playerIndex]) {
                 playerIndex = 0

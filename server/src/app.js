@@ -9,7 +9,7 @@ import addMiddlewares from "./middlewares/addMiddlewares.js";
 import rootRouter from "./routes/rootRouter.js";
 import { createServer } from "http"
 import { Server } from "socket.io"
-import { Game, User, Registration, Trick } from "./models/index.js"
+import { Game, Registration, Trick, Round } from "./models/index.js"
 import createGame from "./services/createGame.js";
 import gameStarter from "./services/gameStarter.js"
 import joinGame from "./services/joinGame.js"
@@ -67,7 +67,7 @@ io.on('connection', (socket) => {
 
   socket.on('game:start', async(gameInfo, players) => {
     const gameId = gameInfo.id
-    console.log("entered game start", gameInfo, players)
+    // console.log("entered game start", gameInfo, players)
     const gameStartPackage = await gameStarter(gameInfo, players)
     // console.log(gamePackage)
     io.in(gameId).emit("game:start success", gameStartPackage)
@@ -149,30 +149,29 @@ io.on('connection', (socket) => {
     }   
   })
 
-  socket.on("trick:next", async(gameId) => {
-    //Need to pass the winner of the previous trick as the player whosUp
+  socket.on("trick:next", async(gameId, round) => {
     let newTrickPackage = {
-      lastTrickWinnerId: null,
+      round: {},
       newTrick: {},
       dealtCards: []
     }
-    const latestRound = await Game.relatedQuery("rounds")
-      .for(gameId)
-      .orderBy("createdAt", 'desc')
-      .limit(1)
-    console.log("tricks:next latestRound", latestRound)
 
-    const lastWinner = await latestRound[0].$relatedQuery('tricks')
-      .select('winnerId')
+    // let latestRound = await Round.query().findById(round.id)
+    const lastWinner = await Trick.query()
+      .where({ roundId: round.id })
       .orderBy("createdAt", 'desc')
       .limit(1)
+    // const lastWinner = await latestRound.$relatedQuery('tricks')
+    //   .select('winnerId')
+    //   .orderBy("createdAt", 'desc')
+    //   .limit(1)
     console.log("trick:next lastWinner", lastWinner[0].winnerId)
+    const latestRound = await Round.query().patchAndFetchById(round.id, { whosTurn: lastWinner[0].winnerId })
 
-    newTrickPackage.lastTrickWinnerId = lastWinner[0].winnerId
-    
-    newTrickPackage.newTrick = await Trick.query().insertAndFetch({ roundId: latestRound[0].id })
+    newTrickPackage.round = latestRound
+    newTrickPackage.newTrick = await Trick.query().insertAndFetch({ roundId: latestRound.id })
 
-    const remainingCardsInHand = await latestRound[0].$relatedQuery("cards")
+    const remainingCardsInHand = await latestRound.$relatedQuery("cards")
       .where('trickPlayedId', null)
     console.log(remainingCardsInHand)
     

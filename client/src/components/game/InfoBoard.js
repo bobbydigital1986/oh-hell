@@ -1,11 +1,11 @@
 import React from "react";
 
 const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betScores, phaseOver }) => {
-    console.log("leadSuit", leadSuit)
-    console.log("Trump", trump)
-    console.log("Round", round)
-    console.log("gameinfo board players", players)
-    console.log("gameinfo board phaseOver", phaseOver)
+    // console.log("leadSuit", leadSuit)
+    // console.log("Trump", trump)
+    // console.log("Round", round)
+    // console.log("gameinfo board players", players)
+    // console.log("gameinfo board phaseOver", phaseOver)
 
     let dealerName
     if (dealerId) {
@@ -25,15 +25,15 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betSco
                 bet: "-",
                 tricksWon: "-"
             }
-            console.log("betScores", betScores)
+            // console.log("betScores", betScores)
             if (betScores && betScores.length > 0) {
                 let findBet = betScores.find(bet => bet.userId == player.id)
                 if (findBet) {
                     playerBet = findBet
-                    console.log(`in gameInfo playerBet, ${player.username} phaseOver:`, phaseOver)
+                    // console.log(`in gameInfo playerBet, ${player.username} phaseOver:`, phaseOver)
                     
                     if (phaseOver.whatsOver == "round" || phaseOver.whatsOver == "game" ) {
-                        console.log(`in gameInfo playerBet, ${player.username} playerBet:`, playerBet)
+                        // console.log(`in gameInfo playerBet, ${player.username} playerBet:`, playerBet)
                         if (playerBet.bet == playerBet.tricksWon && playerBet.bet != "-") {
                             winStyling = "winner-styling"
                             winCheck = "✔"

@@ -23,7 +23,7 @@ const Chat = ({ user, messages, sendMessage }) => {
             <h5>Chat</h5>
             <div className='input-group message-field'>
                 <form onSubmit={handleSubmit} className="input-group-field ">
-                    <input type="text" value={inputValue}  onChange={(event) => setInputValue(event.target.value)} />
+                    <input className="message-field" type="text" value={inputValue}  onChange={(event) => setInputValue(event.target.value)} />
                 </form>
                 <button type="submit" className="button input-group-button">Send</button>
             </div>

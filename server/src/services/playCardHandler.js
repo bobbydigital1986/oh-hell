@@ -36,7 +36,9 @@ const playCardHandler = async(game, round, trick, card) => {
             console.log("hit the whosUp if statement, should be set to 0")
             whosUpIndex = 0
         }
-        playCardResponse.whosTurn = game.dealerOrder[whosUpIndex]
+        const roundWithWhosTurnFirstCardPlayed = await Round.query().patchAndFetchById(round.id, { whosTurn: game.dealerOrder[whosUpIndex] })
+        playCardResponse.round = roundWithWhosTurnFirstCardPlayed
+        // playCardResponse.whosTurn = game.dealerOrder[whosUpIndex]
         
         return  playCardResponse
     } else {
@@ -84,8 +86,10 @@ const playCardHandler = async(game, round, trick, card) => {
                 //Round not over
                 console.log("play card resolved as trick over only")
                 // const newTrick = await Trick.trickBuilder(round)
-                // playCardResponse.newTrick = newTrick 
-                playCardResponse.whosTurn = wonTrickObject.userId //Winner plays first in next trick
+                // playCardResponse.newTrick = newTrick
+                const roundWithWhosTurnRoundNotOver = await Round.query().patchAndFetchById(round.id, { whosTurn: wonTrickObject.userId })
+                playCardResponse.round = roundWithWhosTurnRoundNotOver
+                // playCardResponse.whosTurn = wonTrickObject.userId //Winner plays first in next trick
                 playCardResponse.betScores = roundBets
 
                 return playCardResponse
@@ -176,7 +180,9 @@ const playCardHandler = async(game, round, trick, card) => {
             if (!game.dealerOrder[whosUpIndex]) {
                 whosUpIndex = 0
             }
-            playCardResponse.whosTurn = game.dealerOrder[whosUpIndex]
+            const roundWithWhosUpTrickNotOver = await Round.query().patchAndFetchById(round.id, {whosTurn: game.dealerOrder[whosUpIndex]})
+            playCardResponse.round = roundWithWhosUpTrickNotOver
+            // playCardResponse.whosTurn = game.dealerOrder[whosUpIndex]
             
             return playCardResponse
         }
