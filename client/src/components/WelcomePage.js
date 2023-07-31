@@ -32,18 +32,12 @@ const WelcomePage = (props) => {
         numberOfRounds.push(option)
     }
 
-    // console.log("gameSettings", gameSettings)
 
     const handleInputChange = (event) => {
-        // console.log("event.currentTarget", event.currentTarget)
-        // console.log("event.currentTarget.value", event.currentTarget.value)
-        // console.log("event.currentTarget.name", event.currentTarget.name)
         setGameSettings({
             ...gameSettings,
             [event.currentTarget.name]: event.currentTarget.value
         })
-        // }
-        // console.log("missed both ifs")
     }
 
     const handleSubmit = (event) => {
@@ -52,7 +46,6 @@ const WelcomePage = (props) => {
     }
 
     if (shouldRedirect === true ) {
-        // console.log("caught the redirect gameSettings", gameSettings)
         return <Redirect to={{
             pathname: "/game/new",
             gameSettings: {

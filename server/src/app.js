@@ -51,7 +51,6 @@ io.on('connection', (socket) => {
   console.log('Client connected');
 
   socket.on('chat message', (message, gameId) => {
-    console.log(`Received message: ${message}`, "in gameId", gameId);
     io.in(gameId).emit('chat message', message);
   });
 
@@ -67,28 +66,20 @@ io.on('connection', (socket) => {
 
   socket.on('game:start', async(gameInfo, players) => {
     const gameId = gameInfo.id
-    // console.log("entered game start", gameInfo, players)
     const gameStartPackage = await gameStarter(gameInfo, players)
-    // console.log(gamePackage)
     io.in(gameId).emit("game:start success", gameStartPackage)
   })
 
   socket.on('game:joined', async({ gameId, user }) => {
-    console.log('gameId', gameId)
-    console.log('userId', user)
     socket.user = user
-    console.log("socket.user", socket.user)
     const game = await Game.query().findById(gameId)
     const joinedAction = await joinGame(game, user.id)
     const currentPlayers = await Registration.query()
       .where({ gameId: gameId })
       .join('users', 'registrations.userId', 'users.id')
       .select('registrations.userId as id', 'users.username', 'registrations.gameScore')
-    console.log("game:joined currentplayers", currentPlayers)
-    // const currentPlayers = registrants.map(registrant => RegistrantSerializer(registrant)) 
     socket.join(gameId)
     io.to(socket.id).emit('game:joined success', { game, players: currentPlayers })
-    // socket.to(gameId).emit('player:joined', socket.user)
     socket.to(gameId).emit('player:joined', { players: currentPlayers })
 
   })
@@ -99,7 +90,6 @@ io.on('connection', (socket) => {
   })
 
   socket.on('game:full', async(gameInfo) => {
-    console.log("game:full received")
     await Game.query().findById(gameInfo.id).patch({ acceptingRegistrants: false })
   })
 
@@ -109,43 +99,17 @@ io.on('connection', (socket) => {
 
     const playCardResponse = await playCardHandler(game, round, trick, card)
         
-    console.log("playCardResponse", playCardResponse)
     if (playCardResponse.phaseOver.whatsOver == "trick") {
-      console.log("playCardResponse.phaseOver.whatsOver == trick")
       io.in(gameId).emit('card:played trickOver', playCardResponse)
-        // playCardResponse = {
-        //     phaseOver: {
-        //          whatsOver: "trick",
-        //          winnerId: userId
-        //     }
-        //     playedCards: [playedCards]
-        //     whosTurn: userId
-        //     newTrick: newTrick
-        // }
+
     } else if (playCardResponse.phaseOver.whatsOver == "round") {
-      console.log("playCardResponse.phaseOver.whatsOver == round")
       io.in(gameId).emit('card:played trickAndRoundOver', playCardResponse)
-        // playCardResponse = {
-        //     phaseOver: {
-        //          whatsOver: "round",
-        //          winnerId: userId
-        //     }
-        //     playedCards: [playedCards],
-        //     whosTurn???? <--- look into this
-        // }
+
     } else if (playCardResponse.phaseOver.whatsOver == "game") {
-      console.log("playCardResponse.phaseOver.whatsOver == game")
       io.in(gameId).emit('card:played gameOver', playCardResponse)
     } else {
+      // Continue playing trick
       io.in(gameId).emit('card:played success', playCardResponse)
-        // playCardResponse = {
-        //     phaseOver: {
-        //          whatsOver: "",
-        //          winnerId: null
-        //     }
-        //     playedCards: [playedCards]
-        //     whosTurn: userId
-        // }
     }   
   })
 
@@ -156,24 +120,17 @@ io.on('connection', (socket) => {
       dealtCards: []
     }
 
-    // let latestRound = await Round.query().findById(round.id)
     const lastWinner = await Trick.query()
       .where({ roundId: round.id })
       .orderBy("createdAt", 'desc')
       .limit(1)
-    // const lastWinner = await latestRound.$relatedQuery('tricks')
-    //   .select('winnerId')
-    //   .orderBy("createdAt", 'desc')
-    //   .limit(1)
-    console.log("trick:next lastWinner", lastWinner[0].winnerId)
-    const latestRound = await Round.query().patchAndFetchById(round.id, { whosTurn: lastWinner[0].winnerId })
 
+    const latestRound = await Round.query().patchAndFetchById(round.id, { whosTurn: lastWinner[0].winnerId })
     newTrickPackage.round = latestRound
     newTrickPackage.newTrick = await Trick.query().insertAndFetch({ roundId: latestRound.id })
 
     const remainingCardsInHand = await latestRound.$relatedQuery("cards")
       .where('trickPlayedId', null)
-    console.log(remainingCardsInHand)
     
     newTrickPackage.dealtCards = remainingCardsInHand
     io.in(gameId).emit("trick:next success", (newTrickPackage))
@@ -182,9 +139,7 @@ io.on('connection', (socket) => {
 
   socket.on("round:next", async(gameInfo, round) => {
     const gameId = gameInfo.id
-    console.log("round next game info", gameInfo)
     const roundPackage = await newRoundStarter(gameId, round)
-    console.log("round:next roundPackage", roundPackage)
     io.in(gameId).emit("round:next success", roundPackage)
     
   })
@@ -196,7 +151,6 @@ io.on('connection', (socket) => {
   })
 
   socket.on('disconnect', () => {
-    // [socket, gameId] = socket.room
     console.log('Client disconnected');
   });
 });

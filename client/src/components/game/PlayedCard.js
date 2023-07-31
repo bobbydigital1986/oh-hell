@@ -1,8 +1,6 @@
 import React from "react";
 
-const PlayedCard = ({ card, playCard, user }) => {
-    // console.log("PlayedCard", card)
-    
+const PlayedCard = ({ card, playCard, user }) => {    
 
     return (
         <div className="playing-card">
