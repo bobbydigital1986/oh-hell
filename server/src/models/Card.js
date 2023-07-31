@@ -8,7 +8,6 @@ class Card extends Model {
 
     static async assembleDeck(round, players) {
         const { Round } = require("./index.js")
-        console.log("round in assembleDeck", round)
 
         const suits = ['♦', '♣', '♠', '♥']
         const suitsStrings = ['diamonds', 'clubs', 'spades', 'hearts']
@@ -96,14 +95,12 @@ class Card extends Model {
         let cardsPerPlayer = round.numberOfTricks
         let cardsDealt = 0
         let totalCardsToDeal = (cardsPerPlayer * players.length) + 1 //1 is for the trump card
-        console.log("totalCardsToDeal", totalCardsToDeal)
         let playerIndex = 0
         let finalDeck = []
         let trumpSuitId
         for (let i = 0; i < totalCardsToDeal; i++) {
             
             if ((cardsDealt - 1) % cardsPerPlayer == 0 && cardsDealt != 1 && cardsDealt != 0) {
-                console.log("Caught the playerIndex bump", cardsDealt, i)
                 playerIndex++
             }
             if (i === 0) {
@@ -111,7 +108,6 @@ class Card extends Model {
                 trumpSuitId = shuffledDeck[i].suitId
                 cardsDealt++
             } else {
-                console.log("playerIndex", playerIndex)
                 shuffledDeck[i].userId = players[playerIndex].id
                 if (shuffledDeck[i].suitId == trumpSuitId) {
                     shuffledDeck[i].trump = true
@@ -120,10 +116,7 @@ class Card extends Model {
             }
             finalDeck.push(shuffledDeck[i])
         }
-
-        console.log("shuffledDeck", shuffledDeck[0])
         const newDeck = await Card.query().insertGraphAndFetch(finalDeck)
-        
         
         return newDeck
     }

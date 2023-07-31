@@ -4,12 +4,7 @@ import { Redirect } from "react-router-dom";
 
 const GameNew = ({ user, socket, gameSettings, ...props}) => {
 
-    // console.log("GameNew gameSettings", props.location.gameSettings)
     const [gameId, setGameId] = useState(null)
-    // console.log(gameId)
-
-    // console.log(props)
-    
     let numberOfPlayers = 4
     let numberOfRounds = 3
     let gameCreate = false
@@ -25,12 +20,10 @@ const GameNew = ({ user, socket, gameSettings, ...props}) => {
         });
 
         socket.on('game:create success', (gameId) => {
-            // console.log("socket response", gameId)
             setGameId(gameId.newGameId)
         })
         
         socket.on('game:create join-existing', (gameId) => {
-            // console.log("socket response", gameId)
             setGameId(gameId.existingGameId)
         })
         

@@ -35,8 +35,6 @@ const PlayerTile = ({
         slotName = 'Open '
         slotStyle = "open-slot"
     }
-    // console.log("in player tile dealt cards", tileDealtCards)
-    // console.log("in player tile played cards", playedCards)
     
     let cardsArray
     let playedCardSlot = (
@@ -45,22 +43,16 @@ const PlayerTile = ({
     if (tileDealtCards) {
         let noLeadSuitInHand
         if (!leadSuit?.suitId) {
-            // console.log("NO LEAD SUIT PLAYED YET")
             noLeadSuitInHand = true
         } else if (tileDealtCards.find(cardSuit => cardSuit.suitId == leadSuit.suitId)) {
-            // console.log(player.username, "HAS A LEAD SUIT CARD IN HAND")    
             noLeadSuitInHand = false
         } else {
-            // console.log(player.username, "DOESNT HAVE ANY LEAD")  
             noLeadSuitInHand = true
         }
         
         let cardCount = 0
         let firstCard
         cardsArray = tileDealtCards.map((card => {
-            // console.log("playerTile canPlay logic card", card)
-            // console.log("playerTile canPlay logic whosTurn", whosTurn)
-            // console.log("playerTile canPlay logic leadSuit", leadSuit)
             let canPlay = false
             if (whosTurn != player.id) {
                 canPlay = false
@@ -68,7 +60,6 @@ const PlayerTile = ({
                 canPlay = true
             } 
             if (!playedCards.find(playedCard => card.id === playedCard.id)) {
-                // console.log("playerTile canPlay designation on card", canPlay)
                 cardCount === 0 ? firstCard = true : firstCard = false
                 cardCount++
                 return (

@@ -12,9 +12,8 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
             </option>
         )
         if ((i + sumOfCurrentBets) == round?.numberOfTricks && round?.dealerId == player?.id) {
-            // console.log("Cannot bet", i)
+            // Cannot bet i
         } else {
-            // console.log("valid bet", i)
             betOptions.push(option)
         }
     }
@@ -28,20 +27,15 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
         }
     }
 
-    // console.log(input)
     const handleInputChange = (event) => {
         setInput(event.target.value)
     }
 
     let statusDisplay = <div></div>
-    // console.log("PlayerTile trickOver", trickOver)
-    // console.log("PlayerTile roundOver", roundOver)
-    // console.log("PlayerStatusSlot PlayerBetScore", playerBetScore)
     if (gameInfo && player) {
         if (!gameStarted && gameInfo.ownerId == user.id && gameInfo?.ownerId == player?.id) {
             statusDisplay = (<button type="button" className="button cell start-button" onClick={handleStart}>Start Game</button>)
         } else if (round?.phase == "betting") {
-            // console.log("entered round?.phase == betting if statement player", player)
             if (player?.id == user.id && player?.id == whosTurn) {
                 statusDisplay = (
                     <div className="betting">
@@ -76,7 +70,6 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
             }
                 
         } else if (phaseOver.winnerId == player?.id && player) {
-            // console.log("Missed the betting ifs winner found")
             if (phaseOver.whatsOver == "game") {
                     statusDisplay = (
                         <div className="winner" onClick={nextGamePhase}>
@@ -86,7 +79,6 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
                     )
             } else if (phaseOver.whatsOver == "round") {
                 //Trick and Round over
-                // console.log("Game Tile caught the roundOver if")
                 statusDisplay = (
                     <div className="winner" onClick={nextGamePhase}>
                         <p>{player?.username} Won!</p>
@@ -104,11 +96,9 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
                 )
             }
         } else if (whosTurn == player?.id && whosTurn) {
-            // console.log("missed the betting ifs -> round.phase", round)
             statusDisplay = (
                 <h4 className="your-turn">{player?.username}'s turn</h4>
             )
-            // console.log("designated next turn")
         }
     }
 

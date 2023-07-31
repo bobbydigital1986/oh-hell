@@ -1,9 +1,6 @@
 import React from "react";
 
 const PlayerCard = ({ card, playCard, user, canPlay, firstCard }) => {
-    // console.log("PlayerCard card", card)
-    
-
 
     const handleClick = (event) => {
         if (!canPlay) {

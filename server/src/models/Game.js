@@ -53,19 +53,11 @@ class Game extends Model {
     }
 
     static async setDealerOrder(game, players) {
-        console.log("game => setDealerOrder game", game)
-        console.log("game => setDealerOrder players", players)
         const numberOfPlayers = players.length
-        console.log("Game => setDealerOrder numberOfPlayers", numberOfPlayers)
         let playerIndex = 0
         let alternatingPlayers = []
 
         for (let i = 0; i < game.numberOfRounds; i++) {
-            console.log("setDealerOrder alternatingPlayers", alternatingPlayers)
-            console.log("setDealerOrder playerIndex", playerIndex)
-            console.log("setDealerOrder i", i)
-            console.log("setDealerOrder players[playerIndex]", players[playerIndex])
-            console.log("setDealerOrder players[playerIndex].id", players[playerIndex]?.id)
             let newDealerId = players[playerIndex]?.id
             if (!players[playerIndex]) {
                 playerIndex = 0

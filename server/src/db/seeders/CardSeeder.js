@@ -23,7 +23,6 @@ class CardSeeder {
                 cards.push(card)
             }
         }
-        // console.log(cards)
         await Card.query().insertGraph(cards)
     }
 }
