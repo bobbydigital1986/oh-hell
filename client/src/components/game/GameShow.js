@@ -39,16 +39,12 @@ const GameShow = ({ user, socket, ...rest}) => {
     // console.log("Game User", user)
 
     const handleStart = () => {
-        // console.log("handleStart started")
         socket.emit("game:start", gameInfo, players)
-        // setGameStarted(true)
     }
 
-    // console.log("players", players)
     console.log("GameShow gameInfo", gameInfo)
     console.log("GameShow phaseOver", phaseOver)
-    // console.log("GameShow roundOver", roundOver)
-    // console.log("GameShow trickOver", trickOver)
+    console.log("GameShow betScores", betScores)
     console.log("GameShow whosTurn", whosTurn)
     console.log("GameShow players", players)
     console.log("GameShow gameStarted", gameStarted)
@@ -117,6 +113,7 @@ const GameShow = ({ user, socket, ...rest}) => {
                 whatsOver: "game"
             })
             setPlayers(playCardResponse.players)
+            setBetScores(playCardResponse.betScores)
         })
 
         socket.on('card:played trickOver', (playCardResponse) => {
@@ -312,7 +309,7 @@ const GameShow = ({ user, socket, ...rest}) => {
         players.map(player => {
             if (player.wonGame) {
                 winnerSummary.push(
-                    <div className="winner-summary">
+                    <div className="winner-summary" key={player.userId}>
                         {player.username} won with {player.gameScore} points!
                     </div>
                 )

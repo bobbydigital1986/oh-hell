@@ -99,14 +99,17 @@ const playCardHandler = async(game, round, trick, card) => {
                 // playCardResponse.roundOver = true
                 
                 let betGraph = []
+                let currentRegistrations = await Registration.query().where({ gameId: game.id })
                 const resolvedBets = roundBets.map((betScore) => {
+                    console.log("resolvedBets betScore", betScore)
                     let betObject = {
                         id: betScore.id
                     }
-                    //may need to set default of score to null so that State recognizes change in value
                     if (betScore.bet == betScore.tricksWon) {
                         const trickPointsAwarded = betScore.bet + 1
-                        const newScore = trickPointsAwarded + betScore.score
+                        const matchingRegistrant = currentRegistrations.find(registrant => registrant.id == betScore.registrantId)
+                        const newScore = trickPointsAwarded + matchingRegistrant.gameScore
+                        console.log("resolvedBets => betScore.map => newScore", newScore)
                         betObject.score = newScore
                         betObject.registration = {
                             id: betScore.registrantId,
@@ -117,6 +120,7 @@ const playCardHandler = async(game, round, trick, card) => {
                     }
                     return betScore
                 })
+                console.log("playCardHandler betGraph", betGraph)
                 if (betGraph.length > 0) {
                     const upsertResponse = await BetScore.query().upsertGraph(betGraph)
                     console.log("betScore upsert response", upsertResponse)
@@ -135,7 +139,7 @@ const playCardHandler = async(game, round, trick, card) => {
                     // .orderBy('registrations.gameScore', 'DESC')
                 playCardResponse.players = currentPlayers
                 console.log("playCardHandler currentPlayers", currentPlayers)
-                const currentPlayersOrdered = currentPlayers.sort((a, b) => {b.gameScore - a.gameScore})
+                const currentPlayersOrdered = currentPlayers.sort((a, b) => { return b.gameScore - a.gameScore})
                 console.log("playCardHandler currentPlayersOrdered", currentPlayersOrdered)
                 if (roundPhaseEnded.numberOfTricks >= game.numberOfRounds) {
                     //Game over
@@ -151,10 +155,12 @@ const playCardHandler = async(game, round, trick, card) => {
                         if (nextPlayerIndex >= currentPlayersOrdered.length) {
                             nextPlayerIndex = 0
                         }
-
+                        //Game over bug is in here - sets gamescores to equal each other for some reason. playCardResponse.players starts out correct but becomes malformed
                         if (currentPlayersOrdered[currentPlayerIndex].gameScore > currentPlayersOrdered[nextPlayerIndex].gameScore) {
                             let gameWinner = await Registration.query().patchAndFetchById(currentPlayersOrdered[currentPlayerIndex].registrantId, {wonGame: true})
-                            console.log("gameWinner should end for loop i is", i, "gameWinner is:", gameWinner)
+                            console.log("gameWinner should end, currentPlayersOrdered[currentPlayerIndex].gameScore", currentPlayersOrdered[currentPlayerIndex].gameScore)
+                            console.log("gameWinner should end, currentPlayersOrdered[nextPlayerIndex].gameScore", currentPlayersOrdered[nextPlayerIndex].gameScore)
+                            console.log("gameWinner should end, for loop i is", i, "gameWinner is:", gameWinner)
                             playCardResponse.winners.push(gameWinner)
                             currentPlayersOrdered[currentPlayerIndex].wonGame = true
                             i = currentPlayersOrdered.length
@@ -162,11 +168,17 @@ const playCardHandler = async(game, round, trick, card) => {
                             let gameWinner = await Registration.query().patchAndFetchById(currentPlayersOrdered[currentPlayerIndex].registrantId, {wonGame: true})
                             playCardResponse.winners.push(gameWinner)
                             currentPlayersOrdered[currentPlayerIndex].wonGame = true
-                            console.log("gameWinner continuing loop i is", i, "gameWinner is:", gameWinner)
+                            console.log("gameWinner scores equal each other, currentPlayersOrdered[currentPlayerIndex].gameScore", currentPlayersOrdered[currentPlayerIndex].gameScore)
+                            console.log("gameWinner scores equal each other, currentPlayersOrdered[nextPlayerIndex].gameScore", currentPlayersOrdered[nextPlayerIndex].gameScore)
+                            console.log("gameWinner scores equal each other, loop i is", i, "gameWinner is:", gameWinner)
                         } else {
                             console.log("missed the gameWinner ifs, i is:", i)
                         }
                     }
+                    playCardResponse.players = await Registration.query()
+                        .where({ gameId: game.id })
+                        .join('users', 'registrations.userId', 'users.id')
+                        .select('registrations.userId as id', 'registrations.id as registrantId', 'users.username', 'registrations.gameScore', 'registrations.wonGame')    
                     console.log("playCardResponse gameOver:", playCardResponse)
                     return playCardResponse
                 }
