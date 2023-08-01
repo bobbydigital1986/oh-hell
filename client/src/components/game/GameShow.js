@@ -97,20 +97,7 @@ const GameShow = ({ user, socket, ...rest}) => {
                 whatsOver: "round",
                 winnerId: playCardResponse.phaseOver.winnerId
             })
-            // setRoundOver(true)
-            // setDealerId(null)
             setWhosTurn(null)
-            // setLeadSuit({})
-        // playCardResponse = {
-        //     phaseOver: {
-        //        whatsOver: round,
-        //        winnerId: 1
-        //     }
-        //     playedCards: [playedCards]
-        //     whosTurn: userId
-        //     newTrick: newTrick
-        // }
-
         })
 
         socket.on('card:played gameOver', (playCardResponse) => {
@@ -124,24 +111,12 @@ const GameShow = ({ user, socket, ...rest}) => {
         socket.on('card:played trickOver', (playCardResponse) => {
             setPlayedCards(playCardResponse.playedCards)
             setBetScores(playCardResponse.betScores)
-            // setTrickOver({
-            //     isOver: true,
-            //     winnerId: playCardResponse.winnerId
-            // })
             setPhaseOver({
                 whatsOver: "trick",
                 winnerId: playCardResponse.phaseOver.winnerId
             })
             setWhosTurn(null)
-            // setLeadSuit({})
-        // playCardResponse = {
-        //     trickOver: true,
-        //     roundOver: false,
-        //     winnerId: userId,
-        //     playedCards: [playedCards]
-        //     whosTurn: userId
-        //     newTrick: newTrick
-        // }
+
         })
 
         socket.on('card:played success', (playCardResponse) => {
