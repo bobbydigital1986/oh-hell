@@ -78,6 +78,26 @@ const GameShow = ({ user, socket, ...rest}) => {
             setPlayers(gameStatus.players)
         })
 
+        socket.on('game:joined redirect', () => {
+            setShouldRedirect(true)
+        })
+
+        socket.on('game:joined reconnect', (gameState) => {
+            // console.log('player reconnected gameState', gameState)
+            setPlayers(gameState.players)
+            setDealtCards(gameState.dealtCards)
+            setPlayedCards(gameState.playedCards)
+            setWhosTurn(gameState.whosTurn)
+            setGameInfo(gameState.gameInfo)
+            setGameStarted(gameState.gameStarted)
+            setLeadSuit(gameState.leadSuit)
+            setRound(gameState.round)
+            setDealerId(gameState.dealerId)
+            setTrick(gameState.trick)
+            setBetScores(gameState.betScores)
+            setPhaseOver(gameState.phaseOver)
+        })
+
         
         socket.on('game:start success', (gamePackage) => {
             setDealtCards(gamePackage.deck)
@@ -220,7 +240,7 @@ const GameShow = ({ user, socket, ...rest}) => {
     if (phaseOver.whatsOver == "game") {
         let winnerSummary = []
         let gameOverDisplay = (
-            <div>
+            <div key="user.id">
                 <h1>Game Over!</h1>
                 <br/>
                 {winnerSummary}
