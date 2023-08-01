@@ -42,8 +42,8 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
                         <form onSubmit={handleSubmit}>
                             <label>
                             Your Bet:
-                            <select name="bet" onChange={handleInputChange}>
-                                <option id={50} key={50} value={99} disabled="disabled" selected="selected"> 
+                            <select name="bet" onChange={handleInputChange} defaultValue={99}>
+                                <option id={50} key={user.id} value={99} disabled="disabled" selected="selected"> 
                                         --
                                 </option>
                                 {betOptions}

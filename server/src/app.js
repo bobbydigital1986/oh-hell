@@ -16,6 +16,7 @@ import joinGame from "./services/joinGame.js"
 import playCardHandler from "./services/playCardHandler.js";
 import newRoundStarter from "./services/newRoundStarter.js";
 import betHandler from "./services/betHandler.js"
+import reconnectHelper from "./services/reconnectHelper.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -72,16 +73,23 @@ io.on('connection', (socket) => {
 
   socket.on('game:joined', async({ gameId, user }) => {
     socket.user = user
+    console.log("game:joined user", user)
     const game = await Game.query().findById(gameId)
-    const joinedAction = await joinGame(game, user.id)
-    const currentPlayers = await Registration.query()
-      .where({ gameId: gameId })
-      .join('users', 'registrations.userId', 'users.id')
-      .select('registrations.userId as id', 'users.username', 'registrations.gameScore')
-    socket.join(gameId)
-    io.to(socket.id).emit('game:joined success', { game, players: currentPlayers })
-    socket.to(gameId).emit('player:joined', { players: currentPlayers })
-
+    const joinedGameResult = await joinGame(game, user.id)
+    if (joinedGameResult == 'redirect') {
+      //game full - redirect user to homepage
+      io.to(socket.id).emit('game:joined redirect')
+    } else if (joinedGameResult == 'reconnect') {
+      //player found - send reconnect gameState package
+      const gameState = await reconnectHelper(game, user)
+      socket.join(gameId)
+      io.to(socket.id).emit('game:joined reconnect', gameState)
+    } else {
+      //game successfully joined - current players returned
+      socket.join(gameId)
+      io.to(socket.id).emit('game:joined success', { game, players: joinedGameResult })
+      socket.to(gameId).emit('player:joined', { players: joinedGameResult })
+    }
   })
 
   socket.on('bet:submitted', async(user, game, bet, round) => {

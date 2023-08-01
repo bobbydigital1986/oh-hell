@@ -85,7 +85,7 @@ const WelcomePage = (props) => {
                         <input className="button link-button" type="submit" value="Create Game" />
                     </div>
                 </form>
-                <Link to="/game/new" type="button" className="button link-button">Join An Existing Game</Link>
+                <Link to="/game/new" type="button" className="button link-button">Join An Open Game</Link>
             </div>
         </div>
     )
