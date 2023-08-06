@@ -1,3 +1,4 @@
+import { number } from "prop-types";
 import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 
@@ -5,12 +6,14 @@ const WelcomePage = (props) => {
 
     const [gameSettings, setGameSettings] = useState({
         numberOfPlayers: 4,
-        numberOfRounds: 3
+        numberOfRounds: 10
     })
     const [shouldRedirect, setShouldRedirect] = useState(false)
+    const [maxNumberOfRounds, setMaxNumberOfRounds] = useState(12)
 
-
-    let maxNumberOfPlayers = 5
+    console.log('maxNumberOfRounds', maxNumberOfRounds)
+    console.log("gameSettings", gameSettings)
+    let maxNumberOfPlayers = 6
     let numberOfPlayers = []
     for (let i = 1; i <= maxNumberOfPlayers; i++) {
         let option = (
@@ -21,7 +24,6 @@ const WelcomePage = (props) => {
         numberOfPlayers.push(option)
     }
 
-    let maxNumberOfRounds = 12
     let numberOfRounds = []
     for (let i = 1; i <= maxNumberOfRounds; i++) {
         let option = (
@@ -34,12 +36,19 @@ const WelcomePage = (props) => {
 
 
     const handleInputChange = (event) => {
+        console.log(event.currentTarget.name)
+        // console.log("math.floor", 51 / parseInt(gameSettings.numberOfPlayers))
         setGameSettings({
             ...gameSettings,
             [event.currentTarget.name]: event.currentTarget.value
         })
+        if (event.currentTarget.name == "numberOfPlayers") {
+            setMaxNumberOfRounds(Math.floor(51 / parseInt(event.currentTarget.value)))
+        }
     }
-
+    
+    console.log("parseint gamesetting.numberofplaers", parseInt(gameSettings.numberOfPlayers))
+    
     const handleSubmit = (event) => {
         event.preventDefault()
         setShouldRedirect(true)
