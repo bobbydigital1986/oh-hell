@@ -65,7 +65,7 @@ class Game extends Model {
             } else {
                 playerIndex++
             }
-            alternatingPlayers.unshift(newDealerId)
+            alternatingPlayers.push(newDealerId)
         }
         const updatedGame = await Game.query().patchAndFetchById(game.id, { dealerOrder: alternatingPlayers, numberOfPlayers, acceptingRegistrants: false, gameStarted: true })
         return updatedGame
