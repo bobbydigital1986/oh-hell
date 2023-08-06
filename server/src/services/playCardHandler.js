@@ -144,7 +144,7 @@ const playCardHandler = async(game, round, trick, card) => {
             }
         } else {
             //Not first card played but Trick is not over
-            const playedCardUsersOrderIndex = game.dealerOrder.indexOf(card.userId)
+            const playedCardUsersOrderIndex = game.dealerOrder.indexOf(parseInt(card.userId))
             let whosUpIndex = playedCardUsersOrderIndex + 1
             if (!game.dealerOrder[whosUpIndex]) {
                 whosUpIndex = 0

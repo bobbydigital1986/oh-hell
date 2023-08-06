@@ -4,7 +4,7 @@ import { Card, Game, Round, Trick } from "../models/index.js"
 const gameStarter = async(gameInfo, players) => {
     const gameId = gameInfo.id
 
-    const newGameInfo = await Game.setDealerOrder(gameInfo, players)
+    const newGameInfo = await Game.setDealerOrder(gameInfo)
     let newRoundNumberOfTricks = 1
     const newDealerId = newGameInfo.dealerOrder[0]
     const whosTurnId = newGameInfo.dealerOrder[1]

@@ -52,19 +52,16 @@ class Game extends Model {
         }
     }
 
-    static async setDealerOrder(game, players) {
+    static async setDealerOrder(game) {
+        const { Registration } = require("./index.js")
+        const players = await Registration.query().where({ gameId: game.id })
         const numberOfPlayers = players.length
         let playerIndex = 0
         let alternatingPlayers = []
 
         for (let i = 0; i < game.numberOfRounds; i++) {
-            let newDealerId = players[playerIndex]?.id
-            if (!players[playerIndex]) {
-                playerIndex = 0
-                newDealerId = players[0].id
-            } else {
-                playerIndex++
-            }
+            let mod = i%numberOfPlayers
+            let newDealerId = players[mod].userId
             alternatingPlayers.push(newDealerId)
         }
         const updatedGame = await Game.query().patchAndFetchById(game.id, { dealerOrder: alternatingPlayers, numberOfPlayers, acceptingRegistrants: false, gameStarted: true })
