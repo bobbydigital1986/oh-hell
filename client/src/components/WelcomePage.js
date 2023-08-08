@@ -11,8 +11,6 @@ const WelcomePage = (props) => {
     const [shouldRedirect, setShouldRedirect] = useState(false)
     const [maxNumberOfRounds, setMaxNumberOfRounds] = useState(12)
 
-    console.log('maxNumberOfRounds', maxNumberOfRounds)
-    console.log("gameSettings", gameSettings)
     let maxNumberOfPlayers = 6
     let numberOfPlayers = []
     for (let i = 1; i <= maxNumberOfPlayers; i++) {
@@ -37,7 +35,6 @@ const WelcomePage = (props) => {
 
     const handleInputChange = (event) => {
         console.log(event.currentTarget.name)
-        // console.log("math.floor", 51 / parseInt(gameSettings.numberOfPlayers))
         setGameSettings({
             ...gameSettings,
             [event.currentTarget.name]: event.currentTarget.value

@@ -46,6 +46,14 @@ label {
   color: #F5CB5C
 }
 
+.centered {
+  text-align: center;
+}
+
+.info-line {
+  margin: .3em;
+}
+
 
 .game-sideboard {
   height: 90vh;
@@ -62,11 +70,21 @@ label {
   height: 30%;
   padding: .8rem;
   background-color: #333533;
-  margin: 1rem 0 0 0
+  margin: 1rem 0 0 0;
+}
+
+.score-table {
+  width: 100%;
+  font-size: .7rem;
 }
 
 table tr:nth-child(n).winner-styling {
   background-color: green;
+}
+
+
+td {
+  color: #242423;
 }
 
 .info-list {
@@ -76,6 +94,10 @@ table tr:nth-child(n).winner-styling {
 .played-card-slot {
   padding: 1em;
   border-left: 5px #E8EDDF solid;
+}
+
+.cards-array {
+  margin: 0 0 0 1em
 }
 
 h4 {
@@ -96,15 +118,15 @@ h4.player-tile-top-slots {
 }
 
 h1 {
-  font-size: 36px;
-  margin-bottom: 20px;
+  font-size: 3em;
+  margin-bottom: 2em;
 }
 
 form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
+  // margin-bottom: 20px;
 }
 
 label {
@@ -201,12 +223,12 @@ select {
   background-color: #CFDBD5;
 }
 
-// .button {
-//   padding: 0;
-//   background-color: #E8EDDF;
-//   color: #333533
-//   // height: 100%;
-// }
+.trump-text {
+  writing-mode: vertical-lr;
+  text-orientation: upright;
+  text-align: left;
+  text-justify: inter-character;
+}
 
 .input-group {
   margin: 0;
@@ -234,7 +256,7 @@ select {
 }
 
 .playing-card {
-  border: 2px solid black;
+  border: 1px solid black;
   border-radius: .5em;
   max-width: 4.5rem;
   color: #242423;
@@ -275,13 +297,6 @@ input[type=text].message-field {
   margin: 0
 }
 
-.your-turn {
-  background-color: E8EDDF;
-  border-radius: .5rem;
-  height: 100%;
-  padding: .25rem 0;
-  margin: 0 10px 0 10px;
-}
 
 .card-box {
   // height: 7rem;
@@ -299,6 +314,20 @@ input[type=text].message-field {
   // width: 4.5rem;
 }
 
+.your-turn {
+  background-color: #F5CB5C;
+  color: #333533;
+  border: 2px solid #E8EDDF;
+  border-radius: .5rem;
+  height: 100%;
+  padding: .25rem 0;
+  margin: 0 10px 0 10px;
+}
+
+.your-turn h4 {
+  padding: 1rem 0;
+}
+
 .winner {
   background-color: #F5CB5C;
   color: #333533;
@@ -306,11 +335,42 @@ input[type=text].message-field {
   padding: 1rem
 }
 
-.score-table {
-  width: 100%;
-  font-size: .5em;
+.betting {
+  background-color: #F5CB5C;
+  color: #333533;
+  border-radius: 1rem;
+  padding: 1rem;
+  border: 2px solid #E8EDDF; 
 }
 
-td {
-  color: #242423;
+.betting-player {
+  background-color: #F5CB5C;
+  color: #333533;
+  border-radius: 1rem;
+  // padding: 1rem;
+  border: 2px solid #E8EDDF; 
 }
+
+.betting-player label {
+  color: black
+}
+
+form.betting-player {
+  margin: 0
+}
+
+.betting-player form select {
+  padding: 0 1em;
+  margin: 0;
+}
+
+.betting-player.button-group {
+  padding: 0 1em;
+  margin: 0;
+}
+
+.their-turn {
+  border: 3px solid #F5CB5C;
+}
+
+

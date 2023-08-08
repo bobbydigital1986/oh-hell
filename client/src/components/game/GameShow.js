@@ -42,20 +42,20 @@ const GameShow = ({ user, socket, ...rest}) => {
     }
 
     // STATE CHECKS
-    console.log("GameShow players", players)
-    console.log("GameShow dealtCards", dealtCards)
-    console.log("GameShow playedCards", playedCards)
-    console.log("GameShow whosTurn", whosTurn)
-    console.log("GameShow gameInfo", gameInfo)
-    console.log("GameShow gameStarted", gameStarted)
-    console.log("GameShow leadSuit", leadSuit)
-    console.log("GameShow round", round)
-    console.log("GameShow messages", messages)
-    console.log("GameShow dealerId", dealerId)
-    console.log("GameShow trick", trick)
-    console.log("GameShow betScores", betScores)
-    console.log("GameShow phaseOver", phaseOver)
-    console.log("GameShow shouldRedirect", shouldRedirect)
+    // console.log("GameShow players", players)
+    // console.log("GameShow dealtCards", dealtCards)
+    // console.log("GameShow playedCards", playedCards)
+    // console.log("GameShow whosTurn", whosTurn)
+    // console.log("GameShow gameInfo", gameInfo)
+    // console.log("GameShow gameStarted", gameStarted)
+    // console.log("GameShow leadSuit", leadSuit)
+    // console.log("GameShow round", round)
+    // console.log("GameShow messages", messages)
+    // console.log("GameShow dealerId", dealerId)
+    // console.log("GameShow trick", trick)
+    // console.log("GameShow betScores", betScores)
+    // console.log("GameShow phaseOver", phaseOver)
+    // console.log("GameShow shouldRedirect", shouldRedirect)
 
     
     useEffect(() => {
@@ -263,6 +263,21 @@ const GameShow = ({ user, socket, ...rest}) => {
             let tileDealtCards = []
             if (dealtCards && players[i]) {
                 tileDealtCards = dealtCards.filter(card => card.userId == players[i].id)
+                tileDealtCards.sort((a, b) => {
+                    if (a.trump > b.trump) {
+                        return -1
+                    } else if (a.trump < b.trump) {
+                        return 1
+                    } else if (a.suitId > b.suitId) {
+                        return 1
+                    } else if ( a.suitId < b.suitId) {
+                        return -1
+                    } else if (a.baseValue > b.baseValue) {
+                        return -1
+                    } else if (a.baseValue < b.baseValue) {
+                        return 1
+                    }
+                })
             } else {
                 tileDealtCards = []
             }

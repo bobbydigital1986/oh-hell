@@ -1,4 +1,5 @@
 import React from "react";
+import PlayedCard from "./PlayedCard";
 
 const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betScores, phaseOver }) => {
 
@@ -49,14 +50,25 @@ const InfoBoard = ({ trump, players, round, gameInfo, dealerId, leadSuit, betSco
     }
     
     return (
-        <div className="cell small-6 game-info">
-            <h5 className="centered">Game Info</h5>
-            <ul className="no-bullet info-list">
-                <li>Round: {round?.numberOfTricks}</li>
-                <li>Dealer: {dealerName}</li>
-                <li>Trump: {trump?.suitUnicode}{trump?.suit}{trump?.suitUnicode}</li>
-                <li>LeadSuit: {leadSuit?.suitUnicode}{leadSuit?.suit}{leadSuit?.suitUnicode}</li>
+        <div className="cell small-8 game-info container">
+            <h3 className="centered">Game Info</h3>
+            <div className="grid-x trump-game-info">
+                <div className="cell small-6 grid-x">
+                    <p className="cell small-3 trump-text">TRUMP</p>
+                    <div className="cell small-8">
+                        <PlayedCard
+                            card={trump}
+                        />
+                    </div>
+                </div>
+                <ul className="no-bullet info-list cell small-6">
+                    <li>Round: {round?.numberOfTricks}</li>
+                    <li>Dealer: {dealerName}</li>
+                    <li>Trump: {trump?.suitUnicode}{trump?.suit}{trump?.suitUnicode}</li>
+                    <li>LeadSuit: {leadSuit?.suitUnicode}{leadSuit?.suit}{leadSuit?.suitUnicode}</li>
                 </ul>
+            </div>
+            <hr className="info-line"></hr>
             <div className="table-scroll">
                 <table className="score-table">
                     <thead>
