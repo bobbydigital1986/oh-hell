@@ -94,7 +94,6 @@ io.on('connection', (socket) => {
 
   socket.on('bet:submitted', async(user, game, bet, round) => {
     const betResponse = await betHandler(bet, round, game, user)
-    console.log("betResponse", betResponse)
     io.to(game.id).emit('bet:submitted success', betResponse)
   })
 
