@@ -263,6 +263,21 @@ const GameShow = ({ user, socket, ...rest}) => {
             let tileDealtCards = []
             if (dealtCards && players[i]) {
                 tileDealtCards = dealtCards.filter(card => card.userId == players[i].id)
+                tileDealtCards.sort((a, b) => {
+                    if (a.trump > b.trump) {
+                        return -1
+                    } else if (a.trump < b.trump) {
+                        return 1
+                    } else if (a.suitId > b.suitId) {
+                        return 1
+                    } else if ( a.suitId < b.suitId) {
+                        return -1
+                    } else if (a.baseValue > b.baseValue) {
+                        return -1
+                    } else if (a.baseValue < b.baseValue) {
+                        return 1
+                    }
+                })
             } else {
                 tileDealtCards = []
             }

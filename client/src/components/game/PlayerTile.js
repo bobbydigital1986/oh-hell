@@ -31,6 +31,9 @@ const PlayerTile = ({
         if (round.dealerId == player.id) {
             dealer = "Dealer"
         }
+        if (whosTurn == player.id) {
+            slotStyle = "their-turn"
+        }
     } else {
         slotName = 'Open '
         slotStyle = "open-slot"
@@ -116,7 +119,7 @@ const PlayerTile = ({
                         {playedCardSlot}
                     </div>
                 </div>
-                <div className="grid-x">
+                <div className="cards-array grid-x">
                     {cardsArray}
                 </div>
             </div>

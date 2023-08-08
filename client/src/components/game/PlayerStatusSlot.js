@@ -38,7 +38,7 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
         } else if (round?.phase == "betting") {
             if (player?.id == user.id && player?.id == whosTurn) {
                 statusDisplay = (
-                    <div className="betting">
+                    <div className="betting-player">
                         <form onSubmit={handleSubmit}>
                             <label>
                             Your Bet:
@@ -58,13 +58,13 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
             } else if (player.id == whosTurn) {
                 statusDisplay = (
                     <div className="betting">
-                        {player.username} is betting...
+                        <p>{player.username} is betting...</p>
                     </div>
                 )
             } else if (player.id == playerBetScore?.userId) {
                 statusDisplay = (
                     <div className="betted">
-                        {player.username} bet {playerBetScore.bet}
+                        <p>{player.username} bet {playerBetScore.bet}</p>
                     </div>
                 )
             }
@@ -97,7 +97,9 @@ const PlayerStatusSlot = ({ user, gameInfo, gameStarted, phaseOver, round, playe
             }
         } else if (whosTurn == player?.id && whosTurn) {
             statusDisplay = (
-                <h4 className="your-turn">{player?.username}'s turn</h4>
+                <div className="your-turn">
+                    <h4 >{player?.username}'s turn</h4>
+                </div>
             )
         }
     }

@@ -1,10 +1,10 @@
 import React from "react";
 
-const PlayedCard = ({ card, playCard, user }) => {    
+const PlayedCard = ({ card }) => {    
 
     return (
         <div className="playing-card">
-            <img src={card.faceUpImageURL} />
+            <img src={card?.faceUpImageURL} />
         </div>
     )
 
