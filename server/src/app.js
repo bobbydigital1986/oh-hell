@@ -46,7 +46,10 @@ addMiddlewares(app);
 app.use(rootRouter);
 
 const server = createServer(app)
-const io = new Server(server)
+const io = new Server(server, {
+  pingInterval: 120000,
+  pingTimeout: 3000
+})
 
 io.on('connection', (socket) => {
   console.log('Client connected');
@@ -106,7 +109,12 @@ io.on('connection', (socket) => {
   
 
     const playCardResponse = await playCardHandler(game, round, trick, card)
-        
+  
+    if (playCardResponse.error == "playLead") {
+      //Player had lead but didn't play it
+      io.to(socket.id).emit('card:played error', "playLeadSuit")
+    }
+    
     if (playCardResponse.phaseOver.whatsOver == "trick") {
       io.in(gameId).emit('card:played trickOver', playCardResponse)
 

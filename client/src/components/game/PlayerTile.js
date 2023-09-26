@@ -46,10 +46,13 @@ const PlayerTile = ({
     if (tileDealtCards) {
         let noLeadSuitInHand
         if (!leadSuit?.suitId) {
+            //No lead suit yet
             noLeadSuitInHand = true
         } else if (tileDealtCards.find(cardSuit => cardSuit.suitId == leadSuit.suitId)) {
+            //Didn't find lead suit in player's hand
             noLeadSuitInHand = false
         } else {
+            //Found lead suit it player's hand
             noLeadSuitInHand = true
         }
         

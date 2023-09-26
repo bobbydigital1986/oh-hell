@@ -142,7 +142,9 @@ const GameShow = ({ user, socket, ...rest}) => {
         socket.on('card:played success', (playCardResponse) => {
             setPlayedCards(playCardResponse.playedCards)
             setWhosTurn(playCardResponse.round.whosTurn)
-            setLeadSuit(playCardResponse.leadSuit)
+            if (playCardResponse?.leadSuit) {
+                setLeadSuit(playCardResponse.leadSuit)
+            }
         })
 
         socket.on("trick:next success", (newTrickPackage) => {
