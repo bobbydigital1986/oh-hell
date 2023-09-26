@@ -18,7 +18,7 @@ const playCardHandler = async(game, round, trick, card) => {
         playCardResponse.playedCards = [...cardsPlayedPreviously, playedCard]
         playCardResponse.leadSuit = playedCard
         
-        const playedCardUserId = parseInt(playedCard.userId)
+        let playedCardUserId = parseInt(playedCard.userId)
         const playedCardUsersOrderIndex = game.dealerOrder.indexOf(playedCardUserId)
         
         let whosUpIndex = playedCardUsersOrderIndex + 1
@@ -43,7 +43,19 @@ const playCardHandler = async(game, round, trick, card) => {
             cardPlayedWithTrick = await Card.query().patchAndFetchById(card.id, { trickPlayedId: trick.id, trickLeadSuit: trick.id })
         } else {
             //card did not match lead suit
-            cardPlayedWithTrick = await Card.query().patchAndFetchById(card.id, { trickPlayedId: trick.id })
+            let doesPlayerHaveLeadSuit = await Card.query().findOne({ userId: card.userId, roundId: round.id, trickPlayedId: null, suitId: leadSuitId})
+            console.log("doesPlayerHaveLeadSuit", doesPlayerHaveLeadSuit)
+            if (doesPlayerHaveLeadSuit) {
+                //Player had lead suit and should not have been able to play
+                console.log(
+                    `PLAYER PLAYED NON-LEAD BUT HAD LEAD`
+                )
+                cardPlayedWithTrick = await Card.query().findOne({ id: card.id })
+            } else {
+                //Player did not have lead suit in hand. Card is valid
+                cardPlayedWithTrick = await Card.query().patchAndFetchById(card.id, { trickPlayedId: trick.id })
+                playCardResponse.error = "playLead"
+            }
         }
         playCardResponse.playedCards = [...cardsPlayedPreviously, cardPlayedWithTrick]
         const cardPlayersSpotInRotation = game.dealerOrder.indexOf(cardPlayedWithTrick.userId)
