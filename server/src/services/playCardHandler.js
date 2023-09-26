@@ -44,7 +44,6 @@ const playCardHandler = async(game, round, trick, card) => {
         } else {
             //card did not match lead suit
             let doesPlayerHaveLeadSuit = await Card.query().findOne({ userId: card.userId, roundId: round.id, trickPlayedId: null, suitId: leadSuitId})
-            console.log("doesPlayerHaveLeadSuit", doesPlayerHaveLeadSuit)
             if (doesPlayerHaveLeadSuit) {
                 //Player had lead suit and should not have been able to play
                 console.log(
