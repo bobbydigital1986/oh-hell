@@ -109,8 +109,7 @@ io.on('connection', (socket) => {
   
 
     const playCardResponse = await playCardHandler(game, round, trick, card)
-    console.log(`playCardResponse:
-    ${playCardResponse.leadSuit}`)
+  
     if (playCardResponse.error == "playLead") {
       //Player had lead but didn't play it
       io.to(socket.id).emit('card:played error', "playLeadSuit")
