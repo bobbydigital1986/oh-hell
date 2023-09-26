@@ -51,10 +51,10 @@ const playCardHandler = async(game, round, trick, card) => {
                     `PLAYER PLAYED NON-LEAD BUT HAD LEAD`
                 )
                 cardPlayedWithTrick = await Card.query().findOne({ id: card.id })
+                playCardResponse.error = "playLead"
             } else {
                 //Player did not have lead suit in hand. Card is valid
                 cardPlayedWithTrick = await Card.query().patchAndFetchById(card.id, { trickPlayedId: trick.id })
-                playCardResponse.error = "playLead"
             }
         }
         playCardResponse.playedCards = [...cardsPlayedPreviously, cardPlayedWithTrick]
