@@ -111,20 +111,28 @@ io.on('connection', (socket) => {
     const playCardResponse = await playCardHandler(game, round, trick, card)
   
     if (playCardResponse.error == "playLead") {
-      //Player had lead but didn't play it
+      //Player had lead but didn't play it - should error out
+      console.log("SHOULD HAVE PLAYED LEAD - ERROR")
       io.to(socket.id).emit('card:played error', "playLeadSuit")
     }
     
     if (playCardResponse.phaseOver.whatsOver == "trick") {
+      //Trick is over
+      console.log("Trick is over", playCardResponse)
       io.in(gameId).emit('card:played trickOver', playCardResponse)
 
     } else if (playCardResponse.phaseOver.whatsOver == "round") {
+      //Round is over
+      console.log("Round is over", playCardResponse)
       io.in(gameId).emit('card:played trickAndRoundOver', playCardResponse)
 
     } else if (playCardResponse.phaseOver.whatsOver == "game") {
+      //Game is over
+      console.log("Game is over", playCardResponse)
       io.in(gameId).emit('card:played gameOver', playCardResponse)
     } else {
       // Continue playing trick
+      console.log("Trick not over, continuing play", playCardResponse)
       io.in(gameId).emit('card:played success', playCardResponse)
     }   
   })
