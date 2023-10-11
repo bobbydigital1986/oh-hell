@@ -85,6 +85,8 @@ io.on('connection', (socket) => {
     } else if (joinedGameResult == 'reconnect') {
       //player found - send reconnect gameState package
       const gameState = await reconnectHelper(game, user)
+      console.log("Reconnecting user: gameState:", gameState
+      )
       socket.join(gameId)
       io.to(socket.id).emit('game:joined reconnect', gameState)
     } else {
