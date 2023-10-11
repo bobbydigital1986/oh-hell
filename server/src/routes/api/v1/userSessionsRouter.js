@@ -7,7 +7,7 @@ sessionRouter.post("/", (req, res, next) => {
   return passport.authenticate("local", (err, user) => {
     if (err) {
       // eslint-disable-next-line no-console
-      console.log(err);
+      console.log("Passport Error:", err);
     }
 
     if (user) {

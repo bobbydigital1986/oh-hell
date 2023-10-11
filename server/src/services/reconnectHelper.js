@@ -66,17 +66,17 @@ const reconnectHelper = async(game, user) => {
         gameState.betScores = betScores
     
         if (game.gameOver == true) {
-            gameState.whatsOver = {
+            gameState.phaseOver = {
                 whatsOver: "game",
                 winnerId: null
             }
         } else if (currentRound.phase == "ended") {
-            gameState.whatsOver = {
+            gameState.phaseOver = {
                 whatsOver: "round",
                 winnerId: currentTrick.winnerId
             }
         } else if (currentTrick.phase == "ended") {
-            gameState.whatsOver = {
+            gameState.phaseOver = {
                 whatsOver: "trick",
                 winnerId: currentTrick.winnerId
             }
