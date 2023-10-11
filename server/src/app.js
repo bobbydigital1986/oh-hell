@@ -47,8 +47,8 @@ app.use(rootRouter);
 
 const server = createServer(app)
 const io = new Server(server, {
-  pingInterval: 120000,
-  pingTimeout: 3000
+  pingInterval: 25000,
+  pingTimeout: 300000
 })
 
 io.on('connection', (socket) => {
@@ -98,7 +98,9 @@ io.on('connection', (socket) => {
   })
 
   socket.on('bet:submitted', async(user, game, bet, round) => {
+    console.log("bet:submitted")
     const betResponse = await betHandler(bet, round, game, user)
+    console.log("bet.submitted success, betResponse:", betResponse)
     io.to(game.id).emit('bet:submitted success', betResponse)
   })
 
@@ -176,8 +178,8 @@ io.on('connection', (socket) => {
     console.log("disconnecting user's data", socket.data)
   })
 
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
+  socket.on('disconnect', (reason) => {
+    console.log('Client disconnected', reason);
   });
 });
 
