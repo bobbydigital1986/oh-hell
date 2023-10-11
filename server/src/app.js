@@ -85,8 +85,6 @@ io.on('connection', (socket) => {
     } else if (joinedGameResult == 'reconnect') {
       //player found - send reconnect gameState package
       const gameState = await reconnectHelper(game, user)
-      console.log("Reconnecting user: gameState:", gameState
-      )
       socket.join(gameId)
       io.to(socket.id).emit('game:joined reconnect', gameState)
     } else {
@@ -98,9 +96,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('bet:submitted', async(user, game, bet, round) => {
-    console.log("bet:submitted")
     const betResponse = await betHandler(bet, round, game, user)
-    console.log("bet.submitted success, betResponse:", betResponse)
     io.to(game.id).emit('bet:submitted success', betResponse)
   })
 
@@ -122,21 +118,17 @@ io.on('connection', (socket) => {
     
     if (playCardResponse.phaseOver.whatsOver == "trick") {
       //Trick is over
-      console.log("Trick is over", playCardResponse)
       io.in(gameId).emit('card:played trickOver', playCardResponse)
 
     } else if (playCardResponse.phaseOver.whatsOver == "round") {
       //Round is over
-      console.log("Round is over", playCardResponse)
       io.in(gameId).emit('card:played trickAndRoundOver', playCardResponse)
 
     } else if (playCardResponse.phaseOver.whatsOver == "game") {
       //Game is over
-      console.log("Game is over", playCardResponse)
       io.in(gameId).emit('card:played gameOver', playCardResponse)
     } else {
       // Continue playing trick
-      console.log("Trick not over, continuing play", playCardResponse)
       io.in(gameId).emit('card:played success', playCardResponse)
     }   
   })
