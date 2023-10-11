@@ -12,7 +12,7 @@ const playCardHandler = async(game, round, trick, card) => {
 
     const cardsPlayedPreviously = await Card.query().where('trickPlayedId', trick.id)
     if (cardsPlayedPreviously.length == 0) {
-        const playedCard = await Card.query().patchAndFetchById(card.id, { trickPlayedId: trick.id, trickLeadSuit: trick.id })
+        const playedCard = await Card.query().patchAndFetchById(card.id, { trickPlayedId: trick.id, trickLeadSuit: trick.id, leadCard: true })
         const trickInPlay = await Trick.query().patchAndFetchById(trick.id, { phase: "playing" })
 
         playCardResponse.playedCards = [...cardsPlayedPreviously, playedCard]

@@ -42,7 +42,7 @@ const GameShow = ({ user, socket, ...rest}) => {
     }
 
     // STATE CHECKS
-    console.log("GameShow players", players)
+    // console.log("GameShow players", players)
     // console.log("GameShow dealtCards", dealtCards)
     // console.log("GameShow playedCards", playedCards)
     // console.log("GameShow whosTurn", whosTurn)
@@ -83,6 +83,9 @@ const GameShow = ({ user, socket, ...rest}) => {
         })
 
         socket.on('game:joined reconnect', (gameState) => {
+            // console.log(
+            //     "reconnect gameState:", gameState.playedCards
+            // )
             setPlayers(gameState.players)
             setDealtCards(gameState.dealtCards)
             setPlayedCards(gameState.playedCards)

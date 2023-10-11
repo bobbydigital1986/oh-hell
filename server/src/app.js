@@ -86,6 +86,7 @@ io.on('connection', (socket) => {
       //player found - send reconnect gameState package
       const gameState = await reconnectHelper(game, user)
       socket.join(gameId)
+      // console.log("RECONNECT gameState", gameState)
       io.to(socket.id).emit('game:joined reconnect', gameState)
     } else {
       //game successfully joined - current players returned
@@ -109,7 +110,7 @@ io.on('connection', (socket) => {
   
 
     const playCardResponse = await playCardHandler(game, round, trick, card)
-  
+    // console.log("playCardHandler, playCardResponse", playCardResponse)
     if (playCardResponse.error == "playLead") {
       //Player had lead but didn't play it - should error out
       console.log("SHOULD HAVE PLAYED LEAD - ERROR")
