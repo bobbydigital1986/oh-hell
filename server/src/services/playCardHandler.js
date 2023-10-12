@@ -141,8 +141,6 @@ const playCardHandler = async(game, round, trick, card) => {
                             let gameWinner = await Registration.query().patchAndFetchById(currentPlayersOrdered[currentPlayerIndex].registrantId, {wonGame: true})
                             playCardResponse.winners.push(gameWinner)
                             currentPlayersOrdered[currentPlayerIndex].wonGame = true
-                        } else {
-                            console.log("ERRONEOUSLY missed the gameWinner ifs, i is:", i)
                         }
                     }
                     playCardResponse.players = await Registration.query()

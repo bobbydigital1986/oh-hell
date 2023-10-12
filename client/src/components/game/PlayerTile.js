@@ -22,8 +22,6 @@ const PlayerTile = ({
     playerBetScore,
     sumOfCurrentBets
 }) => {
-    console.log("Player Tile, tileDealtCards", tileDealtCards)
-    console.log("Player Tile, playedCards", playedCards)
     let slotName
     let slotStyle
     let dealer
