@@ -48,10 +48,10 @@ const reconnectHelper = async(game, user) => {
         roundCards.map(roundCard => {
             if (roundCard.trickPlayedId == currentTrick.id) {
                 playedCards.push(roundCard)
-                if (roundCard.trickLeadSuit){
-                    gameState.leadSuit = roundCard
+                if (roundCard.leadCard){
+                    leadSuit = roundCard
                 }
-            } else {
+            } else if (!roundCard.trickPlayedId) {
                 dealtCards.push(roundCard)
             }
         })

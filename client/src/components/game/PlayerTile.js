@@ -22,7 +22,6 @@ const PlayerTile = ({
     playerBetScore,
     sumOfCurrentBets
 }) => {
-
     let slotName
     let slotStyle
     let dealer
@@ -60,7 +59,7 @@ const PlayerTile = ({
         let firstCard
         cardsArray = tileDealtCards.map((card => {
             let canPlay = false
-            if (whosTurn != player.id) {
+            if (whosTurn != player.id || round.phase == "betting") {
                 canPlay = false
             } else if (noLeadSuitInHand === true || card.suitId === leadSuit.suitId) {
                 canPlay = true
@@ -92,6 +91,40 @@ const PlayerTile = ({
                 )
             }
         }))
+
+        let playedCard = playedCards.find(card => card.userId == player.id)
+        if (playedCard) {
+            if (playedCard.leadCard) {
+                playedCardSlot = (
+                    <div>
+                        <PlayedCard
+                            key={playedCard.id}
+                            card={playedCard}
+                            playCard={playCard}
+                            user={user}
+                            canPlay={false}
+                            betScores={betScores}
+                            betSubmitter={betSubmitter}
+                        />
+                        <p className="lead-card-indicator">Lead</p>
+                    </div>
+                )
+            }
+            else {
+                playedCardSlot = (
+                    <PlayedCard
+                        key={playedCard.id}
+                        card={playedCard}
+                        playCard={playCard}
+                        user={user}
+                        canPlay={false}
+                        betScores={betScores}
+                        betSubmitter={betSubmitter}
+                    />
+                )
+            }
+        }
+
     }
 
     return (

@@ -42,7 +42,7 @@ const GameShow = ({ user, socket, ...rest}) => {
     }
 
     // STATE CHECKS
-    console.log("GameShow players", players)
+    // console.log("GameShow players", players)
     // console.log("GameShow dealtCards", dealtCards)
     // console.log("GameShow playedCards", playedCards)
     // console.log("GameShow whosTurn", whosTurn)
