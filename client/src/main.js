@@ -4,7 +4,15 @@ import { render } from "react-dom";
 import App from "./components/App";
 import config from "./config";
 import RedBox from "redbox-react";
+import Bugsnag from '@bugsnag/js'
+import BugsnagPluginReact from '@bugsnag/plugin-react'
 import BugsnagPerformance from '@bugsnag/browser-performance'
+
+Bugsnag.start({
+  apiKey: 'c2d1cd99b72e950de3b1dbe42e4970d2',
+  plugins: [new BugsnagPluginReact()]
+})
+
 
 BugsnagPerformance.start({
   apiKey: 'c2d1cd99b72e950de3b1dbe42e4970d2',
